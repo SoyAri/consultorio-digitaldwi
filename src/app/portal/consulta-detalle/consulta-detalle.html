@@ -1,1 +1,33 @@
+<!--
+  [TODO-SEGURIDAD] TEMPLATE A IMPLEMENTAR — DETALLE DE CONSULTA MÉDICA
+  Ver consulta-detalle.ts para especificación completa de seguridad e implementación.
+
+  DATOS A MOSTRAR (todos del signal `consulta()` — cargado con doble filtro de ownership):
+    - Fecha visita    : consulta().visit_date     (formatear con DatePipe o toLocaleDateString)
+    - Motivo          : consulta().chief_complaint
+    - Diagnóstico     : consulta().diagnosis
+    - Tratamiento     : consulta().treatment
+    - Observaciones   : consulta().observations
+    - Doctor          : consulta().doctor_name
+    - Próxima visita  : consulta().next_visit_date (mostrar "—" si es null)
+    - Recetas         : consulta().prescriptions  ← JSONB array
+                        Iterar con @for y mostrar por cada receta:
+                          medicine (medicamento), dosage (dosis),
+                          frequency (frecuencia), duration (duración)
+
+  NAVEGACIÓN:
+    - Botón "Volver" → routerLink="/portal"
+
+  ESTADOS:
+    - @if (loading()) { mostrar spinner mientras carga }
+    - @if (consulta()) { mostrar los datos }
+    - Si no carga o sin acceso → el .ts redirige automáticamente a /portal (no mostrar error)
+
+  SEGURIDAD:
+    - No mostrar id_paciente, id_historial ni ningún UUID en la UI
+    - No mostrar mensajes de "acceso denegado" ni "consulta no encontrada"
+      El .ts redirige silenciosamente a /portal en esos casos (mismo comportamiento
+      para "no existe" y "no te pertenece" — anti-enumeración)
+-->
+
 <p>consulta-detalle works!</p>

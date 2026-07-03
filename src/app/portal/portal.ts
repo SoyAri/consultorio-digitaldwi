@@ -3,9 +3,23 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 
+// =============================================================================
+// [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO PORTAL
+// Alcance: portal.ts, portal.html, auth.guard.ts y consulta-detalle.ts.
+// NO tocar login-paciente.ts ni login-paciente.html — son responsabilidad de otro compañero.
+//
+// DEPENDE DE: Que el OTP esté implementado en login-paciente.ts.
+//   Al completar la verificación OTP exitosamente, sessionStorage tendrá:
+//     'patient_session' = { id_paciente: string, phone: string }
+//   (sin full_name — cargarlo desde la DB usando getPacienteById o getPacienteByPhone)
+// =============================================================================
+//
+// [TODO-SEGURIDAD] Actualizar esta interfaz cuando el OTP esté listo:
+// Eliminar full_name — sessionStorage ya no lo guarda (evitar PII en cliente).
+// Cargar el nombre del paciente desde la DB con getPacienteById(id_paciente).
 interface PatientSession {
   id_paciente: string;
-  full_name: string;
+  full_name: string; // [TODO-SEGURIDAD] Eliminar tras implementar OTP real — no guardar PII en sesión
   phone: string;
 }
 
@@ -26,6 +40,32 @@ export class Portal implements OnInit {
   error         = signal('');
 
   async ngOnInit(): Promise<void> {
+    // [TODO-SEGURIDAD] VERIFICACIÓN EN DOS CAPAS — reemplazar el bloque siguiente:
+    //
+    // CAPA 1 — Verificar sesión de Supabase Auth (no confiar solo en sessionStorage):
+    //   const { data: { session } } = await this.supabase.auth.getSession();
+    //   if (!session) {
+    //     sessionStorage.removeItem('patient_session');
+    //     this.router.navigate(['/login/paciente']);
+    //     return;
+    //   }
+    //
+    // CAPA 2 — Verificar que el phone del JWT coincide con el de sessionStorage:
+    //   const sessionStr = sessionStorage.getItem('patient_session');
+    //   if (!sessionStr) { this.router.navigate(['/login/paciente']); return; }
+    //   const parsed = JSON.parse(sessionStr) as PatientSession;
+    //   if (session.user.phone !== '+52' + parsed.phone) {
+    //     sessionStorage.removeItem('patient_session');
+    //     await this.supabase.auth.signOut();
+    //     this.router.navigate(['/login/paciente']);
+    //     return;
+    //   }
+    //   // Si pasa ambas capas, continuar con los datos del paciente.
+    //
+    // Por qué ambas capas: sessionStorage puede ser manipulado desde DevTools.
+    // El JWT de Supabase Auth es la fuente de verdad — el phone ahí no se puede falsificar.
+    //
+    // ───────────────────────────── INICIO BLOQUE ACTUAL (reemplazar con lo de arriba) ──
     const sessionStr = sessionStorage.getItem('patient_session');
     if (!sessionStr) {
       this.router.navigate(['/login/paciente']);
@@ -37,11 +77,17 @@ export class Portal implements OnInit {
 
     await this.loadData(patient.id_paciente);
     this.loading.set(false);
+    // ─────────────────────────────────────────────────────── FIN BLOQUE ACTUAL ──
   }
 
   private async loadData(pacienteId: string): Promise<void> {
     const now = new Date().toISOString();
 
+    // [TODO-SEGURIDAD] OWNERSHIP — CRÍTICO: los filtros .eq('id_paciente', pacienteId)
+    // son la línea de defensa principal contra que un paciente vea datos de otro.
+    // NUNCA eliminar esos filtros. Si se agregan nuevas queries a este componente,
+    // SIEMPRE filtrar por el id_paciente que viene de la sesión verificada.
+    // Nunca usar parámetros de la URL para determinar qué paciente mostrar.
     const [citasRes, consultasRes] = await Promise.all([
       this.supabase
         .from('citas')
@@ -66,6 +112,9 @@ export class Portal implements OnInit {
   }
 
   logout(): void {
+    // [TODO-SEGURIDAD] Agregar supabase.auth.signOut() para cerrar también la sesión JWT.
+    // Sin esto, el token de Supabase Auth permanece válido aunque el usuario haga logout.
+    // Ejemplo: await this.supabase.auth.signOut();
     sessionStorage.removeItem('patient_session');
     this.router.navigate(['/login/paciente']);
   }

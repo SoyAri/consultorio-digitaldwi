@@ -1,8 +1,88 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DatabaseService } from '../../services/database.service';
+import { SupabaseService } from '../../services/supabase.service';
+
+// =============================================================================
+// [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO OTP
+// Alcance: SOLO este archivo (login-paciente.ts) y login-paciente.html.
+// NO tocar portal.ts, auth.guard.ts ni consulta-detalle.ts —
+// esos archivos son responsabilidad de otro compañero (ver sus propios comentarios).
+//
+// CONFIGURACIÓN: Phone Auth con Twilio ya está habilitado en el Supabase Dashboard.
+//   Solo falta implementar el código — no hay configuración adicional pendiente.
+//   Para usar el cliente de Supabase inyectar: inject(SupabaseService).client
+//   (SupabaseService está en src/app/services/supabase.service.ts)
+//
+// CONTRATO DE ENTREGA (lo que el portal espera encontrar al redirigir a /portal):
+//   sessionStorage key 'patient_session' con:
+//     { id_paciente: string, phone: string }
+//   (solo estos dos campos — sin full_name ni otros datos PII)
+//
+// ── PASO 1: sendOtp() ──────────────────────────────────────────────────────
+//
+//   IMPLEMENTAR:
+//     const { error } = await supabase.auth.signInWithOtp({
+//       phone: '+52' + digits,
+//       options: { channel: 'sms' },
+//     });
+//
+//   SEGURIDAD — ANTI-ENUMERACIÓN DE CUENTAS:
+//     NO buscar el paciente en la tabla `pacientes` en este paso.
+//     NO verificar si el número existe o no.
+//     Siempre mostrar el MISMO mensaje neutro sin importar el resultado:
+//       "Si ese número está registrado, recibirás un código por SMS."
+//     Esto evita que un atacante descubra qué números tienen cuenta registrada.
+//
+//   NO guardar nada en sessionStorage aquí.
+//   NO guardar foundPatient. NO mostrar el nombre del paciente.
+//
+// ── PASO 2: verifyOtp() ────────────────────────────────────────────────────
+//
+//   IMPLEMENTAR (en este orden exacto):
+//
+//   1. Verificar el OTP con Supabase Auth:
+//        const { error } = await supabase.auth.verifyOtp({
+//          phone: '+52' + this.phone.replace(/\D/g, ''),
+//          token: this.otp,
+//          type: 'sms',
+//        });
+//        if (error) throw error;  → mostrar "Código incorrecto o expirado." (genérico)
+//
+//   2. OTP válido → verificar que está registrado como paciente:
+//        const digits = this.phone.replace(/\D/g, '');
+//        const patient = await this.db.getPacienteByPhone(digits);
+//        if (!patient) {
+//          await supabase.auth.signOut();
+//          // Error genérico — no revelar que el número no existe en pacientes.
+//          throw new Error('No se pudo completar el acceso.');
+//        }
+//
+//   3. Guardar sesión (SOLO aquí, después del OTP exitoso):
+//        sessionStorage.setItem('patient_session', JSON.stringify({
+//          id_paciente: (patient as any).id_paciente,
+//          phone: digits,
+//          // NO incluir full_name ni otros datos — el portal los carga desde la DB
+//        }));
+//
+//   4. navigate(['/portal'])
+//
+// ── PASO 3: resend() ───────────────────────────────────────────────────────
+//
+//   IMPLEMENTAR:
+//     await supabase.auth.signInWithOtp({
+//       phone: '+52' + this.phone.replace(/\D/g, ''),
+//       options: { channel: 'sms' },
+//     });
+//
+// ── HTML: login-paciente.html ─────────────────────────────────────────────
+//
+//   Ver comentarios [TODO-SEGURIDAD] en login-paciente.html.
+//   Resumen: cambiar el saludo "¡Hola, {{ firstNamePatient }}!" por texto neutro.
+//
+// =============================================================================
 
 type LoginStep = 'phone' | 'otp';
 
@@ -12,6 +92,14 @@ interface PatientSession {
   phone: string;
 }
 
+// Helper para evitar que las llamadas de red queden colgadas indefinidamente
+async function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> {
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(errorMsg)), ms)
+  );
+  return Promise.race([promise, timeoutPromise]);
+}
+
 @Component({
   selector: 'app-login-paciente',
   imports: [CommonModule, FormsModule, RouterModule],
@@ -19,8 +107,11 @@ interface PatientSession {
   styleUrl: './login-paciente.css',
 })
 export class LoginPaciente implements OnDestroy {
-  private db     = inject(DatabaseService);
-  private router = inject(Router);
+  private db              = inject(DatabaseService);
+  private router          = inject(Router);
+  private supabaseService = inject(SupabaseService);
+  private supabase        = this.supabaseService.client;
+  private cdr             = inject(ChangeDetectorRef);
 
   step: LoginStep = 'phone';
 
@@ -44,40 +135,30 @@ export class LoginPaciente implements OnDestroy {
     this.loading = true;
     this.error   = '';
 
-    // 1. Buscar paciente en Supabase por número de teléfono
-    const patient = await this.db.getPacienteByPhone(digits);
-
-    if (!patient) {
-      this.error   = 'No encontramos ningún paciente registrado con ese número.';
+    try {
+      // 1. Solicitar OTP con timeout de 8 segundos para evitar que la UI se cuelgue si la red es inestable
+      await withTimeout(
+        this.supabase.auth.signInWithOtp({
+          phone: '+52' + digits,
+          options: { channel: 'sms' }
+        }),
+        8000,
+        'Tiempo de espera agotado al conectar con Supabase.'
+      );
+      
+      // 2. Siempre avanzar al paso OTP (medida de seguridad: anti-enumeración de cuentas)
+      this.step = 'otp';
+      this.startCooldown();
+    } catch (err: any) {
+      console.error('Error en sendOtp:', err);
+      // Avanzamos de todas formas para no dar pistas al atacante de que el número no existe,
+      // pero si el error fue un timeout o error de red real, también avanzamos para intentar verificar
+      this.step = 'otp';
+      this.startCooldown();
+    } finally {
       this.loading = false;
-      return;
+      this.cdr.detectChanges();
     }
-
-    this.foundPatient = {
-      id_paciente: (patient as any).id_paciente,
-      full_name: patient.full_name,
-      phone: digits,
-    };
-
-    // Guardar sesión de paciente en sessionStorage
-    sessionStorage.setItem('patient_session', JSON.stringify(this.foundPatient));
-
-    // 2. Enviar OTP real (requiere proveedor SMS configurado en Supabase > Auth > Providers > Phone)
-    // Si Twilio está configurado, descomentar:
-    // try {
-    //   const { error } = await supabase.auth.signInWithOtp({ phone: '+52' + digits });
-    //   if (error) throw error;
-    // } catch {
-    //   this.error = 'No se pudo enviar el código. Intenta de nuevo.';
-    //   this.loading = false;
-    //   return;
-    // }
-
-    // Por ahora: simular envío (SMS requiere Twilio en Supabase Dashboard)
-    await new Promise(r => setTimeout(r, 500));
-    this.step = 'otp';
-    this.startCooldown();
-    this.loading = false;
   }
 
   async verifyOtp(): Promise<void> {
@@ -85,21 +166,45 @@ export class LoginPaciente implements OnDestroy {
     this.loading = true;
     this.error   = '';
     try {
-      // OTP real (descomentar cuando Twilio esté configurado):
-      // const { error } = await supabase.auth.verifyOtp({
-      //   phone: '+52' + this.phone.replace(/\D/g, ''),
-      //   token: this.otp,
-      //   type: 'sms',
-      // });
-      // if (error) throw error;
+      const digits = this.phone.replace(/\D/g, '');
 
-      // Por ahora: cualquier código de 6 dígitos pasa (demo)
-      await new Promise(r => setTimeout(r, 500));
+      // 1. Verificar el OTP con Supabase Auth con timeout de 8 segundos
+      const result = await withTimeout(
+        this.supabase.auth.verifyOtp({
+          phone: '+52' + digits,
+          token: this.otp,
+          type: 'sms',
+        }),
+        8000,
+        'Tiempo de espera agotado al verificar el código.'
+      );
+
+      if (result.error) {
+        throw new Error('Código incorrecto o expirado.');
+      }
+
+      // 2. OTP válido → verificar que está registrado como paciente
+      const patient = await this.db.getPacienteByPhone(digits);
+      if (!patient) {
+        await this.supabase.auth.signOut();
+        // Error genérico — no revelar que el número no existe en pacientes
+        throw new Error('No se pudo completar el acceso.');
+      }
+
+      // 3. Guardar sesión (SOLO aquí, después del OTP exitoso)
+      sessionStorage.setItem('patient_session', JSON.stringify({
+        id_paciente: (patient as any).id_paciente,
+        phone: digits,
+      }));
+
+      // 4. Navegar al portal
       this.router.navigate(['/portal']);
-    } catch {
-      this.error = 'Código incorrecto o expirado. Intenta de nuevo.';
+    } catch (err: any) {
+      console.error('Error en verifyOtp:', err);
+      this.error = err.message || 'Código incorrecto o expirado. Intenta de nuevo.';
     } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -107,8 +212,23 @@ export class LoginPaciente implements OnDestroy {
     if (this.resendCooldown > 0) return;
     this.otp   = '';
     this.error = '';
-    // await supabase.auth.signInWithOtp({ phone: '+52' + this.phone.replace(/\D/g, '') });
+    const digits = this.phone.replace(/\D/g, '');
+    try {
+      await withTimeout(
+        this.supabase.auth.signInWithOtp({
+          phone: '+52' + digits,
+          options: { channel: 'sms' }
+        }),
+        8000,
+        'Tiempo de espera agotado.'
+      );
+    } catch (err) {
+      console.error('Error al reenviar OTP:', err);
+    }
+    
+    // IMPORTANTE: NO eliminar el startCooldown
     this.startCooldown();
+    this.cdr.detectChanges();
   }
 
   back(): void {
@@ -140,6 +260,10 @@ export class LoginPaciente implements OnDestroy {
     return this.phone;
   }
 
+  // [TODO-SEGURIDAD] NO usar este getter en el HTML del paso OTP.
+  // Mostrar el nombre antes de verificar el OTP revela que ese número existe
+  // en el sistema → enumeración de cuentas (account enumeration).
+  // Ver comentario en login-paciente.html para el cambio concreto en la UI.
   get firstNamePatient(): string {
     return this.foundPatient?.full_name.split(' ')[0] ?? '';
   }
