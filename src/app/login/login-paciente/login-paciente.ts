@@ -92,6 +92,14 @@ interface PatientSession {
   phone: string;
 }
 
+// Helper para evitar que las llamadas de red queden colgadas indefinidamente
+async function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> {
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(errorMsg)), ms)
+  );
+  return Promise.race([promise, timeoutPromise]);
+}
+
 @Component({
   selector: 'app-login-paciente',
   imports: [CommonModule, FormsModule, RouterModule],
@@ -127,22 +135,23 @@ export class LoginPaciente implements OnDestroy {
     this.error   = '';
 
     try {
-      // 1. Usar supabase.auth.signInWithOtp para enviar el código por SMS
-      const { error } = await this.supabase.auth.signInWithOtp({
-        phone: '+52' + digits,
-        options: { channel: 'sms' }
-      });
-
-      if (error) {
-        console.error('Error al solicitar OTP:', error);
-      }
+      // 1. Solicitar OTP con timeout de 8 segundos para evitar que la UI se cuelgue si la red es inestable
+      await withTimeout(
+        this.supabase.auth.signInWithOtp({
+          phone: '+52' + digits,
+          options: { channel: 'sms' }
+        }),
+        8000,
+        'Tiempo de espera agotado al conectar con Supabase.'
+      );
       
-      // 2. Siempre avanzar al paso OTP y mostrar mensaje neutro (anti-enumeración)
+      // 2. Siempre avanzar al paso OTP (medida de seguridad: anti-enumeración de cuentas)
       this.step = 'otp';
       this.startCooldown();
     } catch (err: any) {
-      console.error('Error crítico en sendOtp:', err);
-      // Avanzamos de todas formas para no dar pistas al atacante
+      console.error('Error en sendOtp:', err);
+      // Avanzamos de todas formas para no dar pistas al atacante de que el número no existe,
+      // pero si el error fue un timeout o error de red real, también avanzamos para intentar verificar
       this.step = 'otp';
       this.startCooldown();
     } finally {
@@ -157,13 +166,18 @@ export class LoginPaciente implements OnDestroy {
     try {
       const digits = this.phone.replace(/\D/g, '');
 
-      // 1. Verificar el OTP con Supabase Auth
-      const { error: otpError } = await this.supabase.auth.verifyOtp({
-        phone: '+52' + digits,
-        token: this.otp,
-        type: 'sms',
-      });
-      if (otpError) {
+      // 1. Verificar el OTP con Supabase Auth con timeout de 8 segundos
+      const result = await withTimeout(
+        this.supabase.auth.verifyOtp({
+          phone: '+52' + digits,
+          token: this.otp,
+          type: 'sms',
+        }),
+        8000,
+        'Tiempo de espera agotado al verificar el código.'
+      );
+
+      if (result.error) {
         throw new Error('Código incorrecto o expirado.');
       }
 
@@ -197,16 +211,19 @@ export class LoginPaciente implements OnDestroy {
     this.error = '';
     const digits = this.phone.replace(/\D/g, '');
     try {
-      await this.supabase.auth.signInWithOtp({
-        phone: '+52' + digits,
-        options: { channel: 'sms' }
-      });
+      await withTimeout(
+        this.supabase.auth.signInWithOtp({
+          phone: '+52' + digits,
+          options: { channel: 'sms' }
+        }),
+        8000,
+        'Tiempo de espera agotado.'
+      );
     } catch (err) {
       console.error('Error al reenviar OTP:', err);
     }
     
-    // IMPORTANTE: NO eliminar el this.startCooldown() de abajo.
-    // El cooldown de 30s es necesario para evitar SMS bombing
+    // IMPORTANTE: NO eliminar el startCooldown
     this.startCooldown();
   }
 
