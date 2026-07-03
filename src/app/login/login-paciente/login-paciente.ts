@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -111,6 +111,7 @@ export class LoginPaciente implements OnDestroy {
   private router          = inject(Router);
   private supabaseService = inject(SupabaseService);
   private supabase        = this.supabaseService.client;
+  private cdr             = inject(ChangeDetectorRef);
 
   step: LoginStep = 'phone';
 
@@ -156,6 +157,7 @@ export class LoginPaciente implements OnDestroy {
       this.startCooldown();
     } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -202,6 +204,7 @@ export class LoginPaciente implements OnDestroy {
       this.error = err.message || 'Código incorrecto o expirado. Intenta de nuevo.';
     } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -225,6 +228,7 @@ export class LoginPaciente implements OnDestroy {
     
     // IMPORTANTE: NO eliminar el startCooldown
     this.startCooldown();
+    this.cdr.detectChanges();
   }
 
   back(): void {
