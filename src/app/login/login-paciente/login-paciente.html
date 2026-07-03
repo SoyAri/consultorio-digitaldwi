@@ -98,22 +98,9 @@
       @if (step === 'otp') {
         <div class="login-card__header">
           <div class="step-badge">Verificación</div>
-          <!-- [TODO-SEGURIDAD] ANTI-ENUMERACIÓN: No mostrar el nombre del paciente aquí.
-               Confirmar el nombre antes de verificar el OTP revela que ese número
-               está registrado en el sistema (account enumeration attack).
-               REEMPLAZAR con un saludo neutro, por ejemplo:
-                 <h2 class="login-card__title">Código enviado</h2>
-               El nombre del paciente debe mostrarse DESPUÉS de navegar al portal,
-               una vez que la sesión esté completamente verificada. -->
-          <h2 class="login-card__title">¡Hola, {{ firstNamePatient }}!</h2>
-          <!-- [TODO-SEGURIDAD] No confirmar que el número ingresado está registrado.
-               Usar un mensaje neutro que no revele información del sistema:
-                 "Enviamos un código de 6 dígitos al número que ingresaste."
-               Mostrar el número formateado confirma que ese número existe → enumeración.
-               Cualquier diferencia en la respuesta puede usarse para enumerar cuentas. -->
+          <h2 class="login-card__title">Código enviado</h2>
           <p class="login-card__subtitle">
-            Enviamos un código de 6 dígitos al número
-            <strong>{{ formattedPhone }}</strong>
+            Si el número ingresado está registrado, recibirás un código de 6 dígitos por SMS.
           </p>
         </div>
 

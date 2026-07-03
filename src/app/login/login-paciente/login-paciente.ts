@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DatabaseService } from '../../services/database.service';
+import { SupabaseService } from '../../services/supabase.service';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO OTP
@@ -98,8 +99,10 @@ interface PatientSession {
   styleUrl: './login-paciente.css',
 })
 export class LoginPaciente implements OnDestroy {
-  private db     = inject(DatabaseService);
-  private router = inject(Router);
+  private db              = inject(DatabaseService);
+  private router          = inject(Router);
+  private supabaseService = inject(SupabaseService);
+  private supabase        = this.supabaseService.client;
 
   step: LoginStep = 'phone';
 
@@ -123,51 +126,28 @@ export class LoginPaciente implements OnDestroy {
     this.loading = true;
     this.error   = '';
 
-    // [TODO-SEGURIDAD] REEMPLAZAR este bloque completo con OTP real de Supabase.
-    // Ver el bloque de comentarios al inicio del archivo para el código correcto.
-    // PUNTOS CLAVE:
-    //   1. Usar supabase.auth.signInWithOtp({ phone: '+52' + digits, options: { channel: 'sms' } })
-    //   2. Siempre responder con mensaje neutro — NO buscar en tabla pacientes aquí
-    //   3. NO guardar en sessionStorage aquí — solo en verifyOtp() tras éxito
-    //   4. NO asignar foundPatient ni mostrar el nombre del paciente
-    // ──────────────────────────────────────────────── INICIO BLOQUE DEMO ──
+    try {
+      // 1. Usar supabase.auth.signInWithOtp para enviar el código por SMS
+      const { error } = await this.supabase.auth.signInWithOtp({
+        phone: '+52' + digits,
+        options: { channel: 'sms' }
+      });
 
-    // 1. Buscar paciente en Supabase por número de teléfono
-    const patient = await this.db.getPacienteByPhone(digits);
-
-    if (!patient) {
-      this.error   = 'No encontramos ningún paciente registrado con ese número.';
+      if (error) {
+        console.error('Error al solicitar OTP:', error);
+      }
+      
+      // 2. Siempre avanzar al paso OTP y mostrar mensaje neutro (anti-enumeración)
+      this.step = 'otp';
+      this.startCooldown();
+    } catch (err: any) {
+      console.error('Error crítico en sendOtp:', err);
+      // Avanzamos de todas formas para no dar pistas al atacante
+      this.step = 'otp';
+      this.startCooldown();
+    } finally {
       this.loading = false;
-      return;
     }
-
-    this.foundPatient = {
-      id_paciente: (patient as any).id_paciente,
-      full_name: patient.full_name,
-      phone: digits,
-    };
-
-    // Guardar sesión de paciente en sessionStorage
-    sessionStorage.setItem('patient_session', JSON.stringify(this.foundPatient));
-
-    // 2. Enviar OTP real (requiere proveedor SMS configurado en Supabase > Auth > Providers > Phone)
-    // Si Twilio está configurado, descomentar:
-    // try {
-    //   const { error } = await supabase.auth.signInWithOtp({ phone: '+52' + digits });
-    //   if (error) throw error;
-    // } catch {
-    //   this.error = 'No se pudo enviar el código. Intenta de nuevo.';
-    //   this.loading = false;
-    //   return;
-    // }
-
-    // Por ahora: simular envío (SMS requiere Twilio en Supabase Dashboard)
-    await new Promise(r => setTimeout(r, 500));
-    this.step = 'otp';
-    this.startCooldown();
-    this.loading = false;
-
-    // ────────────────────────────────────────────────── FIN BLOQUE DEMO ──
   }
 
   async verifyOtp(): Promise<void> {
@@ -175,33 +155,37 @@ export class LoginPaciente implements OnDestroy {
     this.loading = true;
     this.error   = '';
     try {
-      // [TODO-SEGURIDAD] REEMPLAZAR este bloque con verificación real de Supabase.
-      // Ver el bloque de comentarios al inicio del archivo para el código correcto.
-      // PUNTOS CLAVE:
-      //   1. supabase.auth.verifyOtp({ phone: '+52' + digits, token: this.otp, type: 'sms' })
-      //   2. Si error → throw (mensaje genérico, no detallar el error de Supabase)
-      //   3. Buscar paciente con getPacienteByPhone(digits)
-      //   4. Si no existe en tabla → supabase.auth.signOut() + throw (error genérico)
-      //   5. sessionStorage.setItem AQUÍ (después del OTP exitoso, no antes)
-      //   6. NO guardar full_name en sessionStorage
-      // ──────────────────────────────────────────────── INICIO BLOQUE DEMO ──
+      const digits = this.phone.replace(/\D/g, '');
 
-      // OTP real (descomentar cuando Twilio esté configurado):
-      // const { error } = await supabase.auth.verifyOtp({
-      //   phone: '+52' + this.phone.replace(/\D/g, ''),
-      //   token: this.otp,
-      //   type: 'sms',
-      // });
-      // if (error) throw error;
+      // 1. Verificar el OTP con Supabase Auth
+      const { error: otpError } = await this.supabase.auth.verifyOtp({
+        phone: '+52' + digits,
+        token: this.otp,
+        type: 'sms',
+      });
+      if (otpError) {
+        throw new Error('Código incorrecto o expirado.');
+      }
 
-      // Por ahora: cualquier código de 6 dígitos pasa (demo)
-      await new Promise(r => setTimeout(r, 500));
+      // 2. OTP válido → verificar que está registrado como paciente
+      const patient = await this.db.getPacienteByPhone(digits);
+      if (!patient) {
+        await this.supabase.auth.signOut();
+        // Error genérico — no revelar que el número no existe en pacientes
+        throw new Error('No se pudo completar el acceso.');
+      }
 
-      // ────────────────────────────────────────────────── FIN BLOQUE DEMO ──
+      // 3. Guardar sesión (SOLO aquí, después del OTP exitoso)
+      sessionStorage.setItem('patient_session', JSON.stringify({
+        id_paciente: (patient as any).id_paciente,
+        phone: digits,
+      }));
 
+      // 4. Navegar al portal
       this.router.navigate(['/portal']);
-    } catch {
-      this.error = 'Código incorrecto o expirado. Intenta de nuevo.';
+    } catch (err: any) {
+      console.error('Error en verifyOtp:', err);
+      this.error = err.message || 'Código incorrecto o expirado. Intenta de nuevo.';
     } finally {
       this.loading = false;
     }
@@ -211,13 +195,18 @@ export class LoginPaciente implements OnDestroy {
     if (this.resendCooldown > 0) return;
     this.otp   = '';
     this.error = '';
-    // [TODO-SEGURIDAD] Reemplazar con OTP real:
-    // await supabase.auth.signInWithOtp({ phone: '+52' + this.phone.replace(/\D/g, ''), options: { channel: 'sms' } });
-    //
+    const digits = this.phone.replace(/\D/g, '');
+    try {
+      await this.supabase.auth.signInWithOtp({
+        phone: '+52' + digits,
+        options: { channel: 'sms' }
+      });
+    } catch (err) {
+      console.error('Error al reenviar OTP:', err);
+    }
+    
     // IMPORTANTE: NO eliminar el this.startCooldown() de abajo.
-    // El cooldown de 30s es necesario para evitar SMS bombing (spam de mensajes
-    // a un número de teléfono). Supabase también tiene rate limiting propio,
-    // pero el cooldown en UI es una capa adicional.
+    // El cooldown de 30s es necesario para evitar SMS bombing
     this.startCooldown();
   }
 
