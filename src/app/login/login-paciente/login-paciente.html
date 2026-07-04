@@ -84,6 +84,16 @@
               Enviar código
             }
           </button>
+
+          @if (showDevBypass) {
+            <button
+              class="btn btn--dev-bypass btn--full"
+              type="button"
+              [disabled]="loading"
+              (click)="devSkipOtp()">
+              Saltar verificación (número de prueba)
+            </button>
+          }
         </form>
 
         <div class="login-card__back">

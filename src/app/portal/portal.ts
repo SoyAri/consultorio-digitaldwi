@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
+import { DatabaseService } from '../services/database.service';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO PORTAL
@@ -14,12 +15,8 @@ import { SupabaseService } from '../services/supabase.service';
 //   (sin full_name — cargarlo desde la DB usando getPacienteById o getPacienteByPhone)
 // =============================================================================
 //
-// [TODO-SEGURIDAD] Actualizar esta interfaz cuando el OTP esté listo:
-// Eliminar full_name — sessionStorage ya no lo guarda (evitar PII en cliente).
-// Cargar el nombre del paciente desde la DB con getPacienteById(id_paciente).
 interface PatientSession {
   id_paciente: string;
-  full_name: string; // [TODO-SEGURIDAD] Eliminar tras implementar OTP real — no guardar PII en sesión
   phone: string;
 }
 
@@ -32,8 +29,10 @@ interface PatientSession {
 export class Portal implements OnInit,  OnDestroy {
   private supabase = inject(SupabaseService).client;
   private router   = inject(Router);
+  private db       = inject(DatabaseService);
 
   patient       = signal<PatientSession | null>(null);
+  patientName   = signal('');
   appointments  = signal<any[]>([]);
   consultations = signal<any[]>([]);
   loading       = signal(true);
@@ -85,7 +84,11 @@ export class Portal implements OnInit,  OnDestroy {
     const patient = JSON.parse(sessionStr) as PatientSession;
     this.patient.set(patient);
 
-    await this.loadData(patient.id_paciente);
+    const [pacienteDetail] = await Promise.all([
+      this.db.getPacienteById(patient.id_paciente),
+      this.loadData(patient.id_paciente),
+    ]);
+    this.patientName.set(pacienteDetail?.full_name ?? '');
     this.loading.set(false);
     ['mousemove','keydown','click','scroll'].forEach(event =>
     document.addEventListener(event, () => this.resetInactivityTimer())
@@ -182,6 +185,6 @@ export class Portal implements OnInit,  OnDestroy {
   }
 
   get firstName(): string {
-    return this.patient()?.full_name?.split(' ')[0] ?? '';
+    return this.patientName().split(' ')[0] ?? '';
   }
 }

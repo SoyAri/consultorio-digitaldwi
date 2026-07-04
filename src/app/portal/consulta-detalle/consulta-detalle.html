@@ -57,7 +57,7 @@
           <p class="text-gray-900">{{ consulta()!.next_visit_date ? formatDate(consulta()!.next_visit_date!) : '—' }}</p>
         </div>
 
-        @if (consulta()!.prescriptions?.length) {
+        @if (consulta()!.prescriptions.length) {
           <div>
             <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Receta</p>
             <ul class="space-y-2">
