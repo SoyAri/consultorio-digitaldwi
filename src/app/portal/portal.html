@@ -18,6 +18,26 @@
     </button>
   </header>
 
+    <!-- Aviso de inactividad -->
+  @if (showInactivityWarning()) {
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl text-center">
+        <p class="text-lg font-semibold text-gray-900 mb-2">¿Sigues ahí?</p>
+        <p class="text-sm text-gray-500 mb-6">Tu sesión cerrará pronto por inactividad.</p>
+        <div class="flex gap-3 justify-center">
+          <button (click)="extendSession()"
+            class="px-4 py-2 bg-teal-600 text-white rounded-xl font-medium text-sm hover:bg-teal-700">
+            Continuar sesión
+          </button>
+          <button (click)="logout()"
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-medium text-sm hover:bg-gray-200">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-8">
 
     <!-- Loading -->

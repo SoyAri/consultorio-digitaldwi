@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
@@ -29,7 +29,7 @@ interface PatientSession {
   templateUrl: './portal.html',
   styleUrl: './portal.css',
 })
-export class Portal implements OnInit {
+export class Portal implements OnInit,  OnDestroy {
   private supabase = inject(SupabaseService).client;
   private router   = inject(Router);
 
@@ -38,6 +38,16 @@ export class Portal implements OnInit {
   consultations = signal<any[]>([]);
   loading       = signal(true);
   error         = signal('');
+  private inactivityTimer: any;
+  private warningTimer: any;
+  readonly INACTIVITY_LIMIT = 5* 60 * 1000; // 5 minutos
+  readonly WARNING_TIME = 30 * 1000; // aviso 30 segundos antes
+  showInactivityWarning = signal(false);
+
+    ngOnDestroy(): void {
+    clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+  }
 
   async ngOnInit(): Promise<void> {
     // [TODO-SEGURIDAD] VERIFICACIÓN EN DOS CAPAS — reemplazar el bloque siguiente:
@@ -77,6 +87,10 @@ export class Portal implements OnInit {
 
     await this.loadData(patient.id_paciente);
     this.loading.set(false);
+    ['mousemove','keydown','click','scroll'].forEach(event =>
+    document.addEventListener(event, () => this.resetInactivityTimer())
+  );
+  this.resetInactivityTimer();
     // ─────────────────────────────────────────────────────── FIN BLOQUE ACTUAL ──
   }
 
@@ -111,6 +125,24 @@ export class Portal implements OnInit {
     this.consultations.set(consultasRes.data ?? []);
   }
 
+    private resetInactivityTimer(): void {
+    clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+    this.showInactivityWarning.set(false);
+
+    this.warningTimer = setTimeout(() => {
+      this.showInactivityWarning.set(true);
+    }, this.INACTIVITY_LIMIT - this.WARNING_TIME);
+
+    this.inactivityTimer = setTimeout(() => {
+      this.logout();
+    }, this.INACTIVITY_LIMIT);
+  }
+
+  extendSession(): void {
+    this.resetInactivityTimer();
+  }
+
   logout(): void {
     // [TODO-SEGURIDAD] Agregar supabase.auth.signOut() para cerrar también la sesión JWT.
     // Sin esto, el token de Supabase Auth permanece válido aunque el usuario haga logout.
@@ -142,6 +174,6 @@ export class Portal implements OnInit {
   }
 
   get firstName(): string {
-    return this.patient()?.full_name.split(' ')[0] ?? '';
+    return this.patient()?.full_name?.split(' ')[0] ?? '';
   }
 }
