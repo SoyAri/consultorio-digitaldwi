@@ -8,7 +8,7 @@
         {{ firstName.slice(0,1) }}
       </div>
       <div>
-        <p class="text-sm font-medium text-gray-900">{{ patient()?.full_name ?? '' }}</p>
+        <p class="text-sm font-medium text-gray-900">{{ patientName() }}</p>
         <p class="text-xs text-gray-500">Portal del paciente</p>
       </div>
     </div>
@@ -17,6 +17,26 @@
       Cerrar sesión
     </button>
   </header>
+
+    <!-- Aviso de inactividad -->
+  @if (showInactivityWarning()) {
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl text-center">
+        <p class="text-lg font-semibold text-gray-900 mb-2">¿Sigues ahí?</p>
+        <p class="text-sm text-gray-500 mb-6">Tu sesión cerrará pronto por inactividad.</p>
+        <div class="flex gap-3 justify-center">
+          <button (click)="extendSession()"
+            class="px-4 py-2 bg-teal-600 text-white rounded-xl font-medium text-sm hover:bg-teal-700">
+            Continuar sesión
+          </button>
+          <button (click)="logout()"
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-medium text-sm hover:bg-gray-200">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-8">
 
@@ -42,7 +62,8 @@
         } @else {
           <div class="space-y-3">
             @for (cita of appointments(); track cita.id_cita) {
-              <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4">
+              <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4 cursor-pointer hover:border-teal-300 transition-colors"
+                (click)="verDetalleCita(cita.id_cita)">
                 <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
                   <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -79,7 +100,8 @@
         } @else {
           <div class="space-y-3">
             @for (consulta of consultations(); track consulta.id_historial) {
-              <div class="bg-white rounded-2xl border border-gray-100 p-5">
+              <div class="bg-white rounded-2xl border border-gray-100 p-5 cursor-pointer hover:border-teal-300 transition-colors"
+                (click)="verDetalleConsulta(consulta.id_historial)">
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <p class="font-medium text-gray-900 capitalize">{{ formatDate(consulta.visit_date) }}</p>

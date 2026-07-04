@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DatabaseService } from '../../services/database.service';
 import { SupabaseService } from '../../services/supabase.service';
+import { environment } from '../../../environments/environment';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO OTP
@@ -123,6 +124,10 @@ export class LoginPaciente implements OnDestroy {
   error          = '';
   resendCooldown = 0;
 
+  // TEMPORAL - DEV ONLY: controla la visibilidad del botón que salta la
+  // espera de Twilio usando el número/código de prueba de Supabase.
+  showDevBypass = !environment.production && environment.otpBypass;
+
   private cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
   ngOnDestroy(): void {
@@ -229,6 +234,17 @@ export class LoginPaciente implements OnDestroy {
     // IMPORTANTE: NO eliminar el startCooldown
     this.startCooldown();
     this.cdr.detectChanges();
+  }
+
+  // TEMPORAL - DEV ONLY: usa el número/código de prueba configurado en
+  // Supabase (Test Phone Numbers) para saltar la espera de Twilio en
+  // desarrollo. Reutiliza sendOtp()/verifyOtp() sin modificarlos.
+  async devSkipOtp(): Promise<void> {
+    if (!this.showDevBypass) return;
+    this.phone = environment.otpBypassPhone;
+    await this.sendOtp();
+    this.otp = environment.otpBypassCode;
+    await this.verifyOtp();
   }
 
   back(): void {

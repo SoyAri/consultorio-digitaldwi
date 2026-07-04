@@ -302,6 +302,15 @@
 .btn--primary:disabled { opacity: .6; cursor: not-allowed; }
 .btn--full { width: 100%; }
 
+/* TEMPORAL - DEV ONLY: botón para saltar el OTP con el número de prueba */
+.btn--dev-bypass {
+  background: #FFFBEB;
+  color: #92400E;
+  border: 1.5px dashed #F59E0B;
+}
+.btn--dev-bypass:hover    { background: #FEF3C7; }
+.btn--dev-bypass:disabled { opacity: .6; cursor: not-allowed; }
+
 /* ── Link buttons ───────────────────────────────────────────────────────────── */
 .login-card__back {
   margin-top: 16px;

@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
+import { DatabaseService } from '../services/database.service';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO PORTAL
@@ -14,12 +15,8 @@ import { SupabaseService } from '../services/supabase.service';
 //   (sin full_name — cargarlo desde la DB usando getPacienteById o getPacienteByPhone)
 // =============================================================================
 //
-// [TODO-SEGURIDAD] Actualizar esta interfaz cuando el OTP esté listo:
-// Eliminar full_name — sessionStorage ya no lo guarda (evitar PII en cliente).
-// Cargar el nombre del paciente desde la DB con getPacienteById(id_paciente).
 interface PatientSession {
   id_paciente: string;
-  full_name: string; // [TODO-SEGURIDAD] Eliminar tras implementar OTP real — no guardar PII en sesión
   phone: string;
 }
 
@@ -29,15 +26,27 @@ interface PatientSession {
   templateUrl: './portal.html',
   styleUrl: './portal.css',
 })
-export class Portal implements OnInit {
+export class Portal implements OnInit,  OnDestroy {
   private supabase = inject(SupabaseService).client;
   private router   = inject(Router);
+  private db       = inject(DatabaseService);
 
   patient       = signal<PatientSession | null>(null);
+  patientName   = signal('');
   appointments  = signal<any[]>([]);
   consultations = signal<any[]>([]);
   loading       = signal(true);
   error         = signal('');
+  private inactivityTimer: any;
+  private warningTimer: any;
+  readonly INACTIVITY_LIMIT = 5* 60 * 1000; // 5 minutos
+  readonly WARNING_TIME = 30 * 1000; // aviso 30 segundos antes
+  showInactivityWarning = signal(false);
+
+    ngOnDestroy(): void {
+    clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+  }
 
   async ngOnInit(): Promise<void> {
     // [TODO-SEGURIDAD] VERIFICACIÓN EN DOS CAPAS — reemplazar el bloque siguiente:
@@ -75,8 +84,16 @@ export class Portal implements OnInit {
     const patient = JSON.parse(sessionStr) as PatientSession;
     this.patient.set(patient);
 
-    await this.loadData(patient.id_paciente);
+    const [pacienteDetail] = await Promise.all([
+      this.db.getPacienteById(patient.id_paciente),
+      this.loadData(patient.id_paciente),
+    ]);
+    this.patientName.set(pacienteDetail?.full_name ?? '');
     this.loading.set(false);
+    ['mousemove','keydown','click','scroll'].forEach(event =>
+    document.addEventListener(event, () => this.resetInactivityTimer())
+  );
+  this.resetInactivityTimer();
     // ─────────────────────────────────────────────────────── FIN BLOQUE ACTUAL ──
   }
 
@@ -111,6 +128,32 @@ export class Portal implements OnInit {
     this.consultations.set(consultasRes.data ?? []);
   }
 
+    private resetInactivityTimer(): void {
+    clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+    this.showInactivityWarning.set(false);
+
+    this.warningTimer = setTimeout(() => {
+      this.showInactivityWarning.set(true);
+    }, this.INACTIVITY_LIMIT - this.WARNING_TIME);
+
+    this.inactivityTimer = setTimeout(() => {
+      this.logout();
+    }, this.INACTIVITY_LIMIT);
+  }
+
+  extendSession(): void {
+    this.resetInactivityTimer();
+  }
+
+      verDetalleCita(id: string): void {
+    this.router.navigate(['/portal/consultas', id]);
+  }
+
+    verDetalleConsulta(id: string): void {
+    this.router.navigate(['/portal/consultas', id]);
+  }
+
   logout(): void {
     // [TODO-SEGURIDAD] Agregar supabase.auth.signOut() para cerrar también la sesión JWT.
     // Sin esto, el token de Supabase Auth permanece válido aunque el usuario haga logout.
@@ -142,6 +185,6 @@ export class Portal implements OnInit {
   }
 
   get firstName(): string {
-    return this.patient()?.full_name.split(' ')[0] ?? '';
+    return this.patientName().split(' ')[0] ?? '';
   }
 }
