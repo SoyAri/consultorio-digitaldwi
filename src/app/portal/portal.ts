@@ -143,6 +143,14 @@ export class Portal implements OnInit,  OnDestroy {
     this.resetInactivityTimer();
   }
 
+      verDetalleCita(id: string): void {
+    this.router.navigate(['/portal/consultas', id]);
+  }
+
+    verDetalleConsulta(id: string): void {
+    this.router.navigate(['/portal/consultas', id]);
+  }
+
   logout(): void {
     // [TODO-SEGURIDAD] Agregar supabase.auth.signOut() para cerrar también la sesión JWT.
     // Sin esto, el token de Supabase Auth permanece válido aunque el usuario haga logout.

@@ -1,33 +1,78 @@
-<!--
-  [TODO-SEGURIDAD] TEMPLATE A IMPLEMENTAR — DETALLE DE CONSULTA MÉDICA
-  Ver consulta-detalle.ts para especificación completa de seguridad e implementación.
+<div class="min-h-screen bg-gray-50">
 
-  DATOS A MOSTRAR (todos del signal `consulta()` — cargado con doble filtro de ownership):
-    - Fecha visita    : consulta().visit_date     (formatear con DatePipe o toLocaleDateString)
-    - Motivo          : consulta().chief_complaint
-    - Diagnóstico     : consulta().diagnosis
-    - Tratamiento     : consulta().treatment
-    - Observaciones   : consulta().observations
-    - Doctor          : consulta().doctor_name
-    - Próxima visita  : consulta().next_visit_date (mostrar "—" si es null)
-    - Recetas         : consulta().prescriptions  ← JSONB array
-                        Iterar con @for y mostrar por cada receta:
-                          medicine (medicamento), dosage (dosis),
-                          frequency (frecuencia), duration (duración)
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4">
+    <button (click)="goBack()"
+      class="text-sm text-gray-500 hover:text-teal-600 transition-colors flex items-center gap-1">
+      ← Volver
+    </button>
+    <h1 class="text-sm font-semibold text-gray-900">Detalle de consulta</h1>
+  </header>
 
-  NAVEGACIÓN:
-    - Botón "Volver" → routerLink="/portal"
+  <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
 
-  ESTADOS:
-    - @if (loading()) { mostrar spinner mientras carga }
-    - @if (consulta()) { mostrar los datos }
-    - Si no carga o sin acceso → el .ts redirige automáticamente a /portal (no mostrar error)
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="flex items-center justify-center py-16">
+        <div class="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }
 
-  SEGURIDAD:
-    - No mostrar id_paciente, id_historial ni ningún UUID en la UI
-    - No mostrar mensajes de "acceso denegado" ni "consulta no encontrada"
-      El .ts redirige silenciosamente a /portal en esos casos (mismo comportamiento
-      para "no existe" y "no te pertenece" — anti-enumeración)
--->
+    <!-- Datos -->
+    @if (consulta()) {
+      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
 
-<p>consulta-detalle works!</p>
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Fecha</p>
+          <p class="text-gray-900 font-medium capitalize">{{ formatDate(consulta()!.visit_date) }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Doctor</p>
+          <p class="text-gray-900">{{ consulta()!.doctor_name }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Motivo</p>
+          <p class="text-gray-900">{{ consulta()!.chief_complaint || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Diagnóstico</p>
+          <p class="text-gray-900">{{ consulta()!.diagnosis || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Tratamiento</p>
+          <p class="text-gray-900">{{ consulta()!.treatment || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Observaciones</p>
+          <p class="text-gray-900">{{ consulta()!.observations || '—' }}</p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Próxima visita</p>
+          <p class="text-gray-900">{{ consulta()!.next_visit_date ? formatDate(consulta()!.next_visit_date!) : '—' }}</p>
+        </div>
+
+        @if (consulta()!.prescriptions?.length) {
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Receta</p>
+            <ul class="space-y-2">
+              @for (rx of consulta()!.prescriptions; track rx.medicine) {
+                <li class="bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700">
+                  <span class="font-medium">{{ rx.medicine }}</span>
+                  · {{ rx.dosage }} · {{ rx.frequency }} · {{ rx.duration }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+      </div>
+    }
+
+  </main>
+</div>

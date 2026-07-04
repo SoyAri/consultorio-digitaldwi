@@ -62,7 +62,8 @@
         } @else {
           <div class="space-y-3">
             @for (cita of appointments(); track cita.id_cita) {
-              <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4">
+              <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-start gap-4 cursor-pointer hover:border-teal-300 transition-colors"
+                (click)="verDetalleCita(cita.id_cita)">
                 <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
                   <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -99,7 +100,8 @@
         } @else {
           <div class="space-y-3">
             @for (consulta of consultations(); track consulta.id_historial) {
-              <div class="bg-white rounded-2xl border border-gray-100 p-5">
+              <div class="bg-white rounded-2xl border border-gray-100 p-5 cursor-pointer hover:border-teal-300 transition-colors"
+                (click)="verDetalleConsulta(consulta.id_historial)">
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <p class="font-medium text-gray-900 capitalize">{{ formatDate(consulta.visit_date) }}</p>
