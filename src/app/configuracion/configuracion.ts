@@ -80,6 +80,14 @@ export class Configuracion implements OnInit {
     this.showStaffModal = true;
   }
 
+      selectedStaff: StaffUser | null = null;
+    showDetailModal = false;
+
+    verDetalle(staff: StaffUser): void {
+      this.selectedStaff = staff;
+      this.showDetailModal = true;
+    }
+
   openEditStaff(staff: StaffUser): void {
     this.editingStaff   = staff;
     this.staffModalMode = 'edit';
@@ -148,4 +156,21 @@ export class Configuracion implements OnInit {
   getRoleLabel(role: UserRole): string {
     return role === 'doctor' ? 'Doctor' : 'Secretaria/o';
   }
+
+  async eliminarStaff(staff: StaffUser): Promise<void> {
+  const confirmar = confirm(`¿Estás seguro de eliminar a ${staff.full_name}?`);
+  if (!confirmar) return;
+  try {
+    const { error } = await this.supabase
+      .from('staff_users')
+      .delete()
+      .eq('id_usuario', staff.id_usuario);
+    if (error) throw error;
+    this.showDetailModal = false;
+    await this.loadStaff();
+    this.toast.success(`${staff.full_name} eliminado correctamente`);
+  } catch (err: any) {
+    this.toast.error(err.message ?? 'Error al eliminar el usuario');
+  }
+}
 }
