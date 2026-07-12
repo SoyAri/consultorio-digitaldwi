@@ -280,7 +280,7 @@ export class Agendar implements OnInit, OnDestroy {
       scheduled_date: `${y}-${m}-${day}`,
       scheduled_time: `${h}:${min}`,
       reason:         appt.reason,
-      notes:          '',
+      notes:          appt.notes ?? '',
       status:         appt.status,
     };
     this.appointmentModalMode = 'edit';
