@@ -306,7 +306,7 @@ export class Agendar implements OnInit, OnDestroy {
         this.allAppointments.update(list =>
           list.map(a => a.id_cita === data.id_cita
             ? { ...a, doctor_name: payload.doctor_name, scheduled_at: scheduledAt,
-                reason: payload.reason, status: payload.status as AppointmentStatus }
+                reason: payload.reason, notes: payload.notes, status: payload.status as AppointmentStatus }
             : a
           )
         );
