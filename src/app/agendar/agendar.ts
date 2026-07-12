@@ -202,6 +202,7 @@ export class Agendar implements OnInit, OnDestroy {
       scheduled_at:    new Date(r.scheduled_at),
       status:          r.status,
       reason:          r.reason,
+      notes:           r.notes ?? '',
       avatar_initials: r.patient_name.split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase(),
     };
   }
