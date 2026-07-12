@@ -20,6 +20,7 @@ export interface AgendaAppointment {
   scheduled_at: Date;
   status: AppointmentStatus;
   reason: string;
+  notes: string;
   avatar_initials: string;
 }
 
