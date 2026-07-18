@@ -1,10 +1,12 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { StaffUser, UserRole, StaffFormMode, StaffFormData } from '../models';
+import { StaffUser, UserRole, StaffFormMode, StaffFormData, DoctorSchedule } from '../models';
 import { StaffFormModal } from '../../components/staff-form-modal/staff-form-modal';
 import { ResetPasswordModal } from '../../components/reset-password-modal/reset-password-modal';
 import { Sidebar } from '../../components/sidebar/sidebar';
+import { WeeklyScheduleGrid } from '../../components/weekly-schedule-grid/weekly-schedule-grid';
+import { ScheduleFormModal, ScheduleFormMode } from '../../components/schedule-form-modal/schedule-form-modal';
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -12,7 +14,7 @@ import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-configuracion',
-  imports: [CommonModule, RouterModule, Sidebar, StaffFormModal, ResetPasswordModal],
+  imports: [CommonModule, RouterModule, Sidebar, StaffFormModal, ResetPasswordModal, WeeklyScheduleGrid, ScheduleFormModal],
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css',
 })
@@ -57,8 +59,25 @@ export class Configuracion implements OnInit {
   showResetModal = false;
   resetEmail     = '';
 
+  // ── Horario de disponibilidad ──────────────────────────────────────────────
+  scheduleDoctorId = '';
+  doctorSchedules  = signal<DoctorSchedule[]>([]);
+  scheduleLoading  = signal(false);
+
+  showScheduleModal    = false;
+  scheduleModalMode: ScheduleFormMode = 'create';
+  editingScheduleBlock: DoctorSchedule | null = null;
+
   async ngOnInit(): Promise<void> {
     await this.loadStaff();
+
+    // El doctor siempre edita su propio horario; el admin elige a quién ver.
+    if (this.isDoctor()) {
+      this.scheduleDoctorId = this.currentUser().id_usuario;
+    } else if (this.doctors().length > 0) {
+      this.scheduleDoctorId = this.doctors()[0].id_usuario;
+    }
+    if (this.scheduleDoctorId) await this.loadSchedule();
   }
 
   private async loadStaff(): Promise<void> {
@@ -79,6 +98,14 @@ export class Configuracion implements OnInit {
     this.staffModalMode = 'create';
     this.showStaffModal = true;
   }
+
+      selectedStaff: StaffUser | null = null;
+    showDetailModal = false;
+
+    verDetalle(staff: StaffUser): void {
+      this.selectedStaff = staff;
+      this.showDetailModal = true;
+    }
 
   openEditStaff(staff: StaffUser): void {
     this.editingStaff   = staff;
@@ -148,4 +175,71 @@ export class Configuracion implements OnInit {
   getRoleLabel(role: UserRole): string {
     return role === 'doctor' ? 'Doctor' : 'Secretaria/o';
   }
+
+  // ── Horario de disponibilidad ──────────────────────────────────────────────
+
+  async onScheduleDoctorChange(event: Event): Promise<void> {
+    this.scheduleDoctorId = (event.target as HTMLSelectElement).value;
+    await this.loadSchedule();
+  }
+
+  private async loadSchedule(): Promise<void> {
+    if (!this.scheduleDoctorId) { this.doctorSchedules.set([]); return; }
+    this.scheduleLoading.set(true);
+    try {
+      this.doctorSchedules.set(await this.db.getHorariosDoctor(this.scheduleDoctorId));
+    } finally {
+      this.scheduleLoading.set(false);
+    }
+  }
+
+  openNewScheduleBlock(): void {
+    this.editingScheduleBlock = null;
+    this.scheduleModalMode    = 'create';
+    this.showScheduleModal    = true;
+  }
+
+  openEditScheduleBlock(block: DoctorSchedule): void {
+    this.editingScheduleBlock = block;
+    this.scheduleModalMode    = 'edit';
+    this.showScheduleModal    = true;
+  }
+
+  async onScheduleSaved(block: DoctorSchedule): Promise<void> {
+    this.showScheduleModal = false;
+    try {
+      await this.db.upsertHorarioBlock(block);
+      await this.loadSchedule();
+      this.toast.success('Horario guardado correctamente');
+    } catch (err: any) {
+      this.toast.error(err.message ?? 'Error al guardar el horario.');
+    }
+  }
+
+  async onDeleteScheduleBlock(idHorario: string): Promise<void> {
+    try {
+      await this.db.deleteHorarioBlock(idHorario);
+      await this.loadSchedule();
+      this.toast.success('Bloque de horario eliminado');
+    } catch (err: any) {
+      this.toast.error(err.message ?? 'Error al eliminar el bloque.');
+    }
+  }
+
+  async eliminarStaff(staff: StaffUser): Promise<void> {
+  const confirmar = confirm(`¿Estás seguro de eliminar a ${staff.full_name}?`);
+  if (!confirmar) return;
+  try {
+    const { error } = await this.supabase
+      .from('staff_users')
+      .delete()
+      .eq('id_usuario', staff.id_usuario);
+    if (error) throw error;
+    this.showDetailModal = false;
+    await this.loadStaff();
+    this.toast.success(`${staff.full_name} eliminado correctamente`);
+  } catch (err: any) {
+    this.toast.error(err.message ?? 'Error al eliminar el usuario');
+  }
+}
 }

@@ -20,6 +20,7 @@ export interface AgendaAppointment {
   scheduled_at: Date;
   status: AppointmentStatus;
   reason: string;
+  notes: string;
   avatar_initials: string;
 }
 
@@ -201,6 +202,7 @@ export class Agendar implements OnInit, OnDestroy {
       scheduled_at:    new Date(r.scheduled_at),
       status:          r.status,
       reason:          r.reason,
+      notes:           r.notes ?? '',
       avatar_initials: r.patient_name.split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase(),
     };
   }
@@ -278,7 +280,7 @@ export class Agendar implements OnInit, OnDestroy {
       scheduled_date: `${y}-${m}-${day}`,
       scheduled_time: `${h}:${min}`,
       reason:         appt.reason,
-      notes:          '',
+      notes:          appt.notes ?? '',
       status:         appt.status,
     };
     this.appointmentModalMode = 'edit';
@@ -304,7 +306,7 @@ export class Agendar implements OnInit, OnDestroy {
         this.allAppointments.update(list =>
           list.map(a => a.id_cita === data.id_cita
             ? { ...a, doctor_name: payload.doctor_name, scheduled_at: scheduledAt,
-                reason: payload.reason, status: payload.status as AppointmentStatus }
+                reason: payload.reason, notes: payload.notes, status: payload.status as AppointmentStatus }
             : a
           )
         );

@@ -30,6 +30,10 @@ export const routes: Routes = [
         path: 'consultas/:idConsulta',
         loadComponent: () => import('./portal/consulta-detalle/consulta-detalle').then(m => m.ConsultaDetalle),
       },
+      {
+        path: 'agendar',
+        loadComponent: () => import('./portal/agendar-cita/agendar-cita').then(m => m.AgendarCita),
+      },
     ],
   },
 

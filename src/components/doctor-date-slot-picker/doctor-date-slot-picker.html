@@ -1,0 +1,72 @@
+<div class="picker">
+
+  <!-- Paso 1: doctor -->
+  <div class="form-group">
+    <label class="form-label">Doctor</label>
+    <select class="form-input" (change)="onDoctorSelect($event)">
+      <option value="">Selecciona un doctor</option>
+      @for (doc of doctors; track doc.id_usuario) {
+        <option [value]="doc.id_usuario">{{ doc.full_name }} — {{ doc.specialty }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Paso 2: fecha -->
+  <div class="form-group">
+    <label class="form-label">Fecha</label>
+    <input
+      class="form-input"
+      type="date"
+      [min]="minDate"
+      [disabled]="!selectedDoctorId()"
+      (change)="onDateSelect($event)" />
+  </div>
+
+  <!-- Paso 3: horario -->
+  @if (selectedDoctorId() && selectedDate()) {
+    <div class="form-group">
+      <label class="form-label">Horario disponible</label>
+
+      @if (loadingSlots) {
+        <p class="state-hint">Buscando horarios disponibles…</p>
+      } @else if (errorMessage) {
+        <p class="state-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {{ errorMessage }}
+        </p>
+      } @else if (availableSlots.length === 0) {
+        <p class="state-hint">Sin horarios disponibles ese día. Prueba con otra fecha.</p>
+      } @else {
+        <div class="slot-grid">
+          @for (slot of availableSlots; track slot) {
+            <button
+              type="button"
+              class="slot-chip"
+              [class.slot-chip--active]="selectedSlot() === slot"
+              (click)="selectSlot(slot)">
+              {{ slot }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Paso 4: motivo (opcional) -->
+  @if (selectedSlot()) {
+    <div class="form-group">
+      <label class="form-label">Motivo de la consulta (opcional)</label>
+      <textarea
+        class="form-input"
+        rows="2"
+        placeholder="Ej. dolor de muela, limpieza dental…"
+        [(ngModel)]="reason"
+        name="reason"></textarea>
+    </div>
+  }
+
+  <button type="button" class="btn btn--primary btn--block" [disabled]="!canConfirm()" (click)="onConfirm()">
+    {{ submitting ? 'Agendando…' : 'Confirmar cita' }}
+  </button>
+
+</div>

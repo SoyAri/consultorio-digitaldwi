@@ -1,0 +1,33 @@
+<div class="week-grid">
+  @for (col of columns(); track col.value) {
+    <div class="day-column">
+      <div class="day-column__header">{{ col.label }}</div>
+
+      <div class="day-column__body">
+        @if (col.blocks.length === 0) {
+          <p class="empty-hint">Sin horario</p>
+        }
+
+        @for (block of col.blocks; track block.id_horario) {
+          <div class="block-card" [class.block-card--inactive]="!block.active">
+            <div class="block-card__info">
+              <span class="block-card__range">{{ formatRange(block) }}</span>
+              <span class="block-card__meta">
+                {{ block.slot_duration_minutes }} min
+                @if (!block.active) { · inactivo }
+              </span>
+            </div>
+            <div class="block-card__actions">
+              <button type="button" class="icon-btn" (click)="onEdit(block)" aria-label="Editar bloque">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button type="button" class="icon-btn icon-btn--danger" (click)="onDelete(block)" aria-label="Eliminar bloque">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

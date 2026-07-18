@@ -60,7 +60,7 @@
         } @else {
           <div class="staff-grid">
             @for (member of pagedDoctors(); track member.id_usuario) {
-              <div class="staff-card">
+              <div class="staff-card" (click)="verDetalle(member)" style="cursor:pointer">
                 <div class="staff-card__top">
                   <div class="avatar avatar--lg avatar--blue">{{ getInitials(member.full_name) }}</div>
                   <span class="badge badge--blue">Doctor</span>
@@ -117,7 +117,7 @@
         } @else {
           <div class="staff-grid">
             @for (member of pagedAdmins(); track member.id_usuario) {
-              <div class="staff-card">
+              <div class="staff-card" (click)="verDetalle(member)" style="cursor:pointer">
                 <div class="staff-card__top">
                   <div class="avatar avatar--lg avatar--green">{{ getInitials(member.full_name) }}</div>
                   <span class="badge badge--green">Secretaria/o</span>
@@ -157,11 +157,62 @@
         }
       </section>
 
+      <!-- Grupo: Horario de disponibilidad -->
+      <section class="staff-group">
+        <div class="page__header" style="margin-bottom: 0;">
+          <div>
+            <h2 class="staff-group__title">
+              <span class="staff-group__dot staff-group__dot--blue"></span>
+              Horario de disponibilidad
+            </h2>
+            <p class="page__subtitle">Bloques en los que los pacientes pueden auto-agendar una cita</p>
+          </div>
+          <button class="btn btn--primary" (click)="openNewScheduleBlock()" [disabled]="!scheduleDoctorId">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar bloque
+          </button>
+        </div>
+
+        @if (isAdmin()) {
+          <div class="schedule-doctor-select">
+            <label class="form-label">Doctor</label>
+            <select class="form-input" (change)="onScheduleDoctorChange($event)">
+              @if (doctors().length === 0) {
+                <option value="">Sin doctores registrados</option>
+              }
+              @for (doc of doctors(); track doc.id_usuario) {
+                <option [value]="doc.id_usuario" [selected]="doc.id_usuario === scheduleDoctorId">{{ doc.full_name }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        @if (!scheduleDoctorId) {
+          <div class="empty-state">
+            <p>Selecciona un doctor para ver y editar su horario.</p>
+          </div>
+        } @else {
+          <app-weekly-schedule-grid
+            [blocks]="doctorSchedules()"
+            (edit)="openEditScheduleBlock($event)"
+            (delete)="onDeleteScheduleBlock($event)" />
+        }
+      </section>
+
     </div>
   </main>
 </div>
 
 <!-- ── Modales ──────────────────────────────────────────────────────────────── -->
+@if (showScheduleModal) {
+  <app-schedule-form-modal
+    [mode]="scheduleModalMode"
+    [block]="editingScheduleBlock"
+    [doctorId]="scheduleDoctorId"
+    (saved)="onScheduleSaved($event)"
+    (closed)="showScheduleModal = false" />
+}
+
 @if (showStaffModal) {
   <app-staff-form-modal
     [mode]="staffModalMode"
@@ -178,3 +229,63 @@
     (closed)="showResetModal = false" />
 }
 
+<!-- Modal de detalle de usuario -->
+@if (showDetailModal && selectedStaff) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-100">
+        <h2 class="text-lg font-semibold text-gray-900">Perfil del usuario</h2>
+        <button (click)="showDetailModal = false" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 space-y-4">
+        <div class="flex items-center gap-4">
+          <div class="avatar avatar--lg" [class]="selectedStaff.role === 'doctor' ? 'avatar--blue' : 'avatar--green'">
+            {{ getInitials(selectedStaff.full_name) }}
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ selectedStaff.full_name }}</h3>
+            <span class="text-sm text-gray-500">{{ getRoleLabel(selectedStaff.role) }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Correo</p>
+            <p class="text-gray-900">{{ selectedStaff.email }}</p>
+          </div>
+         
+          @if (selectedStaff.specialty) {
+            <div>
+              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Especialidad</p>
+              <p class="text-gray-900">{{ selectedStaff.specialty }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Footer -->
+
+    <div class="flex gap-3 p-6 border-t border-gray-100">
+      <button class="btn btn--ghost btn--sm flex-1" (click)="showDetailModal = false">
+        Volver
+      </button>
+      <button class="btn btn--ghost btn--sm flex-1" (click)="showDetailModal = false; openEditStaff(selectedStaff!)">
+        Editar
+      </button>
+      <button class="btn btn--sm flex-1" style="background:#EF4444; color:white; border:none"
+        (click)="eliminarStaff(selectedStaff!)">
+        Eliminar
+      </button>
+    </div>
+
+    </div>
+  </div>
+}

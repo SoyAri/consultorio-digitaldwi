@@ -54,7 +54,14 @@
 
       <!-- Próximas citas -->
       <section>
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Próximas citas</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Próximas citas</h2>
+          <a routerLink="/portal/agendar"
+            class="text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 transition-colors rounded-xl px-4 py-2 flex items-center gap-1.5">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agendar nueva cita
+          </a>
+        </div>
         @if (appointments().length === 0) {
           <div class="bg-white rounded-2xl border border-gray-100 p-6 text-center text-gray-400 text-sm">
             No tienes citas programadas próximamente.

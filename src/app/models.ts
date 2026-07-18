@@ -171,3 +171,32 @@ export const EMPTY_CONSULTATION: ConsultationRecord = {
   treatment: '', observations: '',
   prescriptions: [], next_visit_date: '',
 };
+
+// ── Horarios de disponibilidad del doctor ─────────────────────────────────────
+// Coincide con la tabla `horarios_disponibilidad` de Supabase.
+export interface DoctorSchedule {
+  id_horario?: string;
+  id_doctor: string;
+  day_of_week: number;           // 0=domingo … 6=sábado (igual que Date.getDay())
+  start_time: string;            // "HH:mm"
+  end_time: string;               // "HH:mm"
+  slot_duration_minutes: number; // 15 | 20 | 30 | 45 | 60
+  active: boolean;
+}
+
+// ── Auto-agendamiento del paciente (Edge Function book-appointment) ──────────
+export interface BookAppointmentRequest {
+  id_paciente: string;  // solo referencia UX — el servidor re-verifica por teléfono del JWT
+  id_doctor: string;
+  date: string;          // "YYYY-MM-DD"
+  time: string;          // "HH:mm"
+  reason?: string;
+}
+
+export interface BookAppointmentResponse {
+  id_cita: string;
+  scheduled_at: string;
+  doctor_name: string;
+  patient_name: string;
+  status: 'pendiente';
+}
