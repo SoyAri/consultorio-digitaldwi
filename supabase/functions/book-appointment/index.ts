@@ -74,15 +74,21 @@ Deno.serve(async (req: Request) => {
     // ── 3. Resolver identidad del paciente del lado servidor por teléfono ─────
     // Nunca se confía en un id_paciente que venga del body — el JWT (verificado
     // por Supabase Auth vía OTP) es la única fuente de verdad de quién llama.
-    // Mismo criterio de matching que usa login-paciente.ts / portal.ts.
-    const callerPhone = (caller.phone ?? '').replace(/^\+52/, '')
-    if (!callerPhone) {
+    //
+    // OJO: el prefijo exacto que Supabase/WhatsApp graban en `user.phone` no
+    // es estable — puede venir como "52XXXXXXXXXX", "521XXXXXXXXXX" (el "1"
+    // extra que Meta/Twilio insertan para números móviles de México) o con
+    // "+" según el proveedor. `pacientes.phone` siempre guarda SOLO los 10
+    // dígitos locales (ver login-paciente.ts / database.service.ts), así que
+    // en vez de adivinar el prefijo, se toman directo los últimos 10 dígitos.
+    const callerPhone = (caller.phone ?? '').replace(/\D/g, '').slice(-10)
+    if (callerPhone.length !== 10) {
       return json(403, { error: 'El teléfono de la sesión no coincide con el paciente' })
     }
 
     const { data: paciente, error: pacienteError } = await supabaseAdmin
       .from('pacientes')
-      .select('id_paciente, full_name, phone')
+      .select('id_paciente, full_name, phone, assigned_doctor_id')
       .eq('phone', callerPhone)
       .single()
 
@@ -90,7 +96,19 @@ Deno.serve(async (req: Request) => {
       return json(403, { error: 'El teléfono de la sesión no coincide con el paciente' })
     }
 
-    // ── 4. Resolver doctor (para nombre denormalizado) ─────────────────────────
+    // ── 4. El paciente solo puede agendar con su doctor asignado ──────────────
+    // Regla de negocio: el auto-agendamiento no es un directorio abierto de
+    // doctores, es continuidad de atención con el doctor ya asignado en su
+    // expediente. Se valida aquí (no solo en la UI) porque un request directo
+    // al Edge Function podría, si no, mandar cualquier id_doctor.
+    if (!paciente.assigned_doctor_id) {
+      return json(403, { error: 'No tienes un doctor asignado. Contacta a recepción para agendar tu primera cita.' })
+    }
+    if (paciente.assigned_doctor_id !== id_doctor) {
+      return json(403, { error: 'Solo puedes agendar citas con tu doctor asignado.' })
+    }
+
+    // ── 5. Resolver doctor (para nombre denormalizado) ─────────────────────────
     const { data: doctor, error: doctorError } = await supabaseAdmin
       .from('staff_users')
       .select('id_usuario, full_name, role')
@@ -102,7 +120,7 @@ Deno.serve(async (req: Request) => {
       return json(400, { error: 'Doctor inválido' })
     }
 
-    // ── 5. Validar que el horario solicitado exista en la disponibilidad ──────
+    // ── 6. Validar que el horario solicitado exista en la disponibilidad ──────
     const dayOfWeek = new Date(`${date}T00:00:00${CLINIC_UTC_OFFSET}`).getUTCDay()
 
     const { data: bloques, error: bloquesError } = await supabaseAdmin
@@ -116,7 +134,7 @@ Deno.serve(async (req: Request) => {
       return json(400, { error: 'Horario inválido: no coincide con la disponibilidad del doctor' })
     }
 
-    // ── 6. Pre-chequeo de traslape (UX) ────────────────────────────────────────
+    // ── 7. Pre-chequeo de traslape (UX) ────────────────────────────────────────
     // No es la defensa real contra doble-reserva concurrente (eso lo hace el
     // índice único de Postgres en el paso 7) — solo da un mensaje más claro
     // en el caso común (no-concurrente) de un slot ya ocupado.
@@ -138,7 +156,7 @@ Deno.serve(async (req: Request) => {
       return json(409, { error: 'Ese horario ya no está disponible, elige otro' })
     }
 
-    // ── 7. Crear la cita ────────────────────────────────────────────────────────
+    // ── 8. Crear la cita ────────────────────────────────────────────────────────
     // El índice único parcial uq_citas_doctor_slot (id_doctor, scheduled_at)
     // WHERE status IN ('pendiente','en_curso') es la defensa atómica real:
     // si dos pacientes reservan el mismo slot a la vez, Postgres rechaza la

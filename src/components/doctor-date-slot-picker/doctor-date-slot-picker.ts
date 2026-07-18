@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, computed, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DoctorOption } from '../../app/models';
@@ -20,6 +20,7 @@ export class DoctorDateSlotPicker implements OnChanges {
   @Input() doctors: DoctorOption[] = [];
   @Input() availableSlots: string[] = [];
   @Input() loadingSlots = false;
+  @Input() submitting = false;
   @Input() errorMessage = '';
 
   @Output() doctorChange = new EventEmitter<string>();
@@ -33,9 +34,12 @@ export class DoctorDateSlotPicker implements OnChanges {
 
   readonly minDate = new Date().toISOString().split('T')[0];
 
-  canConfirm = computed(() =>
-    !!this.selectedDoctorId() && !!this.selectedDate() && !!this.selectedSlot()
-  );
+  // Método normal (no computed()): `submitting` es un @Input() plano, no una
+  // señal, así que un computed() no lo tomaría como dependencia reactiva y
+  // quedaría con un valor cacheado y desactualizado mientras se envía la cita.
+  canConfirm(): boolean {
+    return !this.submitting && !!this.selectedDoctorId() && !!this.selectedDate() && !!this.selectedSlot();
+  }
 
   // Si el listado de slots cambia (nueva fecha/doctor, o refresco tras un
   // 409 del servidor), el slot previamente elegido ya no es válido salvo

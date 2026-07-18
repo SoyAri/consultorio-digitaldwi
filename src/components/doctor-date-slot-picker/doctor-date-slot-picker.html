@@ -66,7 +66,7 @@
   }
 
   <button type="button" class="btn btn--primary btn--block" [disabled]="!canConfirm()" (click)="onConfirm()">
-    Confirmar cita
+    {{ submitting ? 'Agendando…' : 'Confirmar cita' }}
   </button>
 
 </div>

@@ -157,11 +157,62 @@
         }
       </section>
 
+      <!-- Grupo: Horario de disponibilidad -->
+      <section class="staff-group">
+        <div class="page__header" style="margin-bottom: 0;">
+          <div>
+            <h2 class="staff-group__title">
+              <span class="staff-group__dot staff-group__dot--blue"></span>
+              Horario de disponibilidad
+            </h2>
+            <p class="page__subtitle">Bloques en los que los pacientes pueden auto-agendar una cita</p>
+          </div>
+          <button class="btn btn--primary" (click)="openNewScheduleBlock()" [disabled]="!scheduleDoctorId">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar bloque
+          </button>
+        </div>
+
+        @if (isAdmin()) {
+          <div class="schedule-doctor-select">
+            <label class="form-label">Doctor</label>
+            <select class="form-input" (change)="onScheduleDoctorChange($event)">
+              @if (doctors().length === 0) {
+                <option value="">Sin doctores registrados</option>
+              }
+              @for (doc of doctors(); track doc.id_usuario) {
+                <option [value]="doc.id_usuario" [selected]="doc.id_usuario === scheduleDoctorId">{{ doc.full_name }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        @if (!scheduleDoctorId) {
+          <div class="empty-state">
+            <p>Selecciona un doctor para ver y editar su horario.</p>
+          </div>
+        } @else {
+          <app-weekly-schedule-grid
+            [blocks]="doctorSchedules()"
+            (edit)="openEditScheduleBlock($event)"
+            (delete)="onDeleteScheduleBlock($event)" />
+        }
+      </section>
+
     </div>
   </main>
 </div>
 
 <!-- ── Modales ──────────────────────────────────────────────────────────────── -->
+@if (showScheduleModal) {
+  <app-schedule-form-modal
+    [mode]="scheduleModalMode"
+    [block]="editingScheduleBlock"
+    [doctorId]="scheduleDoctorId"
+    (saved)="onScheduleSaved($event)"
+    (closed)="showScheduleModal = false" />
+}
+
 @if (showStaffModal) {
   <app-staff-form-modal
     [mode]="staffModalMode"
