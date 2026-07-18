@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SupabaseService } from './supabase.service';
-import { PatientDetail, StaffUser, DoctorOption, ConsultationRecord } from '../models';
+import { PatientDetail, StaffUser, DoctorOption, ConsultationRecord, DoctorSchedule } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class DatabaseService {
@@ -232,11 +232,20 @@ export class DatabaseService {
     return data ?? [];
   }
 
+  // Ventana de tiempo [centro - windowMin, centro + windowMin] usada tanto para
+  // advertir de traslapes en el modal de citas del staff como para calcular
+  // slots disponibles del auto-agendamiento — una sola definición de "qué
+  // cuenta como ocupado" para que ambos flujos no diverjan con el tiempo.
+  private overlapWindow(center: Date, windowMin: number): { from: string; to: string } {
+    return {
+      from: new Date(center.getTime() - windowMin * 60_000).toISOString(),
+      to:   new Date(center.getTime() + windowMin * 60_000).toISOString(),
+    };
+  }
+
   async checkDoctorConflict(doctorId: string, scheduledAt: string, excludeCitaId?: string): Promise<boolean> {
     if (!doctorId || !scheduledAt) return false;
-    const dt   = new Date(scheduledAt);
-    const from = new Date(dt.getTime() - 30 * 60_000).toISOString();
-    const to   = new Date(dt.getTime() + 30 * 60_000).toISOString();
+    const { from, to } = this.overlapWindow(new Date(scheduledAt), 30);
 
     let q = this.supabase
       .from('citas')
@@ -250,6 +259,102 @@ export class DatabaseService {
 
     const { data } = await q;
     return (data?.length ?? 0) > 0;
+  }
+
+  // ── HORARIOS DE DISPONIBILIDAD ────────────────────────────────────────────
+
+  async getHorariosDoctor(doctorId: string): Promise<DoctorSchedule[]> {
+    const { data, error } = await this.supabase
+      .from('horarios_disponibilidad')
+      .select('*')
+      .eq('id_doctor', doctorId)
+      .order('day_of_week')
+      .order('start_time');
+    if (error) { console.error('getHorariosDoctor:', error); return []; }
+    return (data ?? []) as DoctorSchedule[];
+  }
+
+  async upsertHorarioBlock(block: DoctorSchedule): Promise<DoctorSchedule> {
+    const payload = { ...block };
+    if (!payload.id_horario) delete payload.id_horario;
+
+    const { data, error } = await this.supabase
+      .from('horarios_disponibilidad')
+      .upsert(payload)
+      .select()
+      .single();
+    if (error) throw error;
+    return data as DoctorSchedule;
+  }
+
+  async deleteHorarioBlock(idHorario: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('horarios_disponibilidad')
+      .delete()
+      .eq('id_horario', idHorario);
+    if (error) throw error;
+  }
+
+  // Calcula los horarios ("HH:mm") disponibles de un doctor en una fecha dada:
+  // bloques de horario activos de ese día de la semana, cuantizados en
+  // incrementos de slot_duration_minutes, menos los que ya chocan con una
+  // cita existente (pendiente/en_curso) o que ya pasaron si la fecha es hoy.
+  // Nota: este cálculo es para UX (mostrar opciones); la verificación real
+  // que impide la doble-reserva vive en el Edge Function `book-appointment`
+  // (índice único en `citas`), no aquí.
+  async getAvailableSlots(doctorId: string, dateISO: string): Promise<string[]> {
+    if (!doctorId || !dateISO) return [];
+
+    const target = new Date(`${dateISO}T00:00:00`);
+    const dayOfWeek = target.getDay();
+
+    const { data: bloques, error: errBloques } = await this.supabase
+      .from('horarios_disponibilidad')
+      .select('*')
+      .eq('id_doctor', doctorId)
+      .eq('day_of_week', dayOfWeek)
+      .eq('active', true);
+    if (errBloques || !bloques?.length) {
+      if (errBloques) console.error('getAvailableSlots (bloques):', errBloques);
+      return [];
+    }
+
+    const dayStart = `${dateISO}T00:00:00`;
+    const dayEnd   = `${dateISO}T23:59:59`;
+    const { data: citasDelDia, error: errCitas } = await this.supabase
+      .from('citas')
+      .select('scheduled_at')
+      .eq('id_doctor', doctorId)
+      .in('status', ['pendiente', 'en_curso'])
+      .gte('scheduled_at', dayStart)
+      .lte('scheduled_at', dayEnd);
+    if (errCitas) { console.error('getAvailableSlots (citas):', errCitas); return []; }
+
+    const ocupados = (citasDelDia ?? []).map(c => new Date(c.scheduled_at).getTime());
+    const now = new Date();
+    const slots: string[] = [];
+
+    for (const bloque of bloques as DoctorSchedule[]) {
+      const [startH, startM] = bloque.start_time.split(':').map(Number);
+      const [endH, endM]     = bloque.end_time.split(':').map(Number);
+      const blockStart = new Date(target); blockStart.setHours(startH, startM, 0, 0);
+      const blockEnd   = new Date(target); blockEnd.setHours(endH, endM, 0, 0);
+      const stepMs = bloque.slot_duration_minutes * 60_000;
+
+      for (let slot = blockStart.getTime(); slot + stepMs <= blockEnd.getTime(); slot += stepMs) {
+        if (slot <= now.getTime()) continue; // no ofrecer horarios ya pasados
+        const { from, to } = this.overlapWindow(new Date(slot), bloque.slot_duration_minutes / 2);
+        const fromMs = new Date(from).getTime();
+        const toMs   = new Date(to).getTime();
+        const choca  = ocupados.some(o => o >= fromMs && o <= toMs);
+        if (!choca) {
+          const d = new Date(slot);
+          slots.push(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+        }
+      }
+    }
+
+    return [...new Set(slots)].sort();
   }
 
   async addCita(citaData: any): Promise<any | null> {
