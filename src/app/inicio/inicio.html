@@ -1,72 +1,73 @@
 <!-- Header -->
-<header
-  class="fixed w-full z-50 transition-all duration-300"
-  [ngClass]="isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'"
->
-  <div class="container mx-auto px-4 flex justify-between items-center">
-    <!-- Logo -->
-    <div class="flex items-center cursor-pointer" (click)="scrollTo('inicio')">
-      <img src="logoletras.png" alt="DENTall Córdoba" class="h-9 w-auto object-contain" />
-    </div>
+<header class="fixed top-0 inset-x-0 z-50 pt-3 sm:pt-4 px-3 sm:px-6">
+  <div class="container mx-auto max-w-6xl relative">
+    <div
+      class="flex items-center justify-between rounded-full px-4 sm:px-5 transition-all duration-300"
+      [ngClass]="isScrolled ? 'bg-white/95 backdrop-blur-xl shadow-lg shadow-gray-900/10 border border-gray-100 py-2' : 'bg-white/70 backdrop-blur-md border border-white/60 py-2.5 shadow-sm shadow-gray-900/5'"
+    >
+      <!-- Logo -->
+      <div class="flex items-center cursor-pointer shrink-0" (click)="scrollTo('inicio')">
+        <img src="logoletras.png" alt="DENTall Córdoba" class="h-7 sm:h-8 w-auto object-contain" />
+      </div>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-6">
-      <a (click)="scrollTo('inicio')" class="text-gray-700 hover:text-teal-600 font-medium cursor-pointer transition-colors">Inicio</a>
-      <a (click)="scrollTo('servicios')" class="text-gray-700 hover:text-teal-600 font-medium cursor-pointer transition-colors">Servicios</a>
-      <a (click)="scrollTo('nosotros')" class="text-gray-700 hover:text-teal-600 font-medium cursor-pointer transition-colors">Nosotros</a>
-      <a (click)="scrollTo('contacto')" class="text-gray-700 hover:text-teal-600 font-medium cursor-pointer transition-colors">Contacto</a>
-      <div class="flex items-center gap-3 ml-4">
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-7">
+        <a (click)="scrollTo('inicio')" class="text-gray-600 hover:text-teal-600 font-medium cursor-pointer transition-colors text-[14px]">Inicio</a>
+        <a (click)="scrollTo('servicios')" class="text-gray-600 hover:text-teal-600 font-medium cursor-pointer transition-colors text-[14px]">Servicios</a>
+        <a (click)="scrollTo('nosotros')" class="text-gray-600 hover:text-teal-600 font-medium cursor-pointer transition-colors text-[14px]">Nosotros</a>
+        <a (click)="scrollTo('contacto')" class="text-gray-600 hover:text-teal-600 font-medium cursor-pointer transition-colors text-[14px]">Contacto</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-2">
         <button
           (click)="navigateTo('/login/paciente')"
-          class="bg-teal-50 text-teal-600 px-5 py-2 rounded-full font-bold hover:bg-teal-100 transition-all text-sm"
+          class="text-teal-700 px-4 py-2 rounded-full font-semibold hover:bg-teal-50 transition-all text-[13px]"
         >
           ¿Ya eres paciente?
         </button>
         <button
           (click)="navigateTo('/login/equipo')"
-          class="bg-teal-600 text-white px-5 py-2 rounded-full font-bold hover:bg-teal-700 transition-all text-sm shadow-md"
+          class="bg-teal-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-teal-700 transition-all text-[13px] shadow-sm"
         >
           Personal
         </button>
-
-
       </div>
-    </nav>
 
-    <!-- Mobile Menu Button -->
-    <button (click)="toggleMenu()" class="md:hidden text-teal-600 p-2">
-      <svg *ngIf="!isMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-      </svg>
-      <svg *ngIf="isMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
+      <!-- Mobile Menu Button -->
+      <button (click)="toggleMenu()" class="md:hidden text-teal-700 p-1.5 -mr-1" aria-label="Abrir menú">
+        <svg *ngIf="!isMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+        <svg *ngIf="isMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
 
-  <!-- Mobile Menu -->
-  <div
-    class="md:hidden absolute top-full left-0 w-full bg-white shadow-xl overflow-hidden transition-all duration-300 border-t border-gray-100"
-    [style.max-height]="isMenuOpen ? '500px' : '0'"
-  >
-    <div class="flex flex-col p-4 gap-4">
-      <a (click)="scrollTo('inicio')" class="text-gray-700 text-lg font-medium border-b border-gray-50 pb-2">Inicio</a>
-      <a (click)="scrollTo('servicios')" class="text-gray-700 text-lg font-medium border-b border-gray-50 pb-2">Servicios</a>
-      <a (click)="scrollTo('nosotros')" class="text-gray-700 text-lg font-medium border-b border-gray-50 pb-2">Nosotros</a>
-      <a (click)="scrollTo('contacto')" class="text-gray-700 text-lg font-medium border-b border-gray-50 pb-2">Contacto</a>
-      <div class="grid grid-cols-2 gap-3 mt-2">
-        <button
-          (click)="navigateTo('/login/paciente')"
-          class="bg-teal-50 text-teal-600 py-3 rounded-xl font-bold text-center"
-        >
-          Paciente
-        </button>
-        <button
-          (click)="navigateTo('/login/equipo')"
-          class="bg-teal-600 text-white py-3 rounded-xl font-bold text-center shadow-lg"
-        >
-          Equipo
-        </button>
+    <!-- Mobile Menu -->
+    <div
+      class="md:hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transition-all duration-250 origin-top"
+      [ngClass]="isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'"
+    >
+      <div class="flex flex-col p-5 gap-1">
+        <a (click)="scrollTo('inicio')" class="text-gray-700 text-base font-medium border-b border-gray-50 py-3 cursor-pointer">Inicio</a>
+        <a (click)="scrollTo('servicios')" class="text-gray-700 text-base font-medium border-b border-gray-50 py-3 cursor-pointer">Servicios</a>
+        <a (click)="scrollTo('nosotros')" class="text-gray-700 text-base font-medium border-b border-gray-50 py-3 cursor-pointer">Nosotros</a>
+        <a (click)="scrollTo('contacto')" class="text-gray-700 text-base font-medium py-3 cursor-pointer">Contacto</a>
+        <div class="grid grid-cols-2 gap-3 mt-3">
+          <button
+            (click)="navigateTo('/login/paciente')"
+            class="bg-teal-50 text-teal-700 py-3 rounded-xl font-semibold text-center text-sm"
+          >
+            Paciente
+          </button>
+          <button
+            (click)="navigateTo('/login/equipo')"
+            class="bg-teal-600 text-white py-3 rounded-xl font-semibold text-center shadow-lg text-sm"
+          >
+            Equipo
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -74,31 +75,34 @@
 
 <main id="inicio">
   <!-- Hero Section -->
-  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
-    <!-- Background Decor -->
+  <section class="relative min-h-[96vh] sm:min-h-screen flex items-center pt-28 sm:pt-32 pb-16 sm:pb-20 overflow-hidden">
+    <!-- Gradient mesh backdrop -->
     <div class="absolute inset-0 z-0">
-      <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-50 rounded-full blur-3xl -mr-64 -mt-32 opacity-60"></div>
-      <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-50 rounded-full blur-3xl -ml-64 -mb-32 opacity-60"></div>
+      <div class="absolute top-[-12%] right-[-8%] w-[380px] h-[380px] sm:w-[600px] sm:h-[600px] bg-teal-100 rounded-full blur-3xl opacity-60"></div>
+      <div class="absolute bottom-[-15%] left-[-10%] w-[340px] h-[340px] sm:w-[550px] sm:h-[550px] bg-blue-50 rounded-full blur-3xl opacity-70"></div>
+      <div class="absolute top-[22%] left-[38%] w-[220px] h-[220px] bg-amber-50 rounded-full blur-3xl opacity-60 hidden lg:block"></div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10">
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div class="max-w-2xl">
-          <span class="inline-block px-4 py-1.5 bg-teal-100 text-teal-700 rounded-full text-sm font-bold mb-6 tracking-wide uppercase">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-14 lg:gap-16 items-center">
+        <div class="max-w-2xl animate-fade-in">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-teal-100 rounded-full text-xs sm:text-sm font-bold mb-6 tracking-wide uppercase text-teal-700 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             Clínica Dental de Especialidades
-          </span>
-          <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] mb-6">
-            Tu sonrisa, <span class="text-teal-600">nuestra pasión.</span><br>
-            <span class="text-4xl md:text-5xl text-gray-800">Especialistas en salud dental</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 leading-[1.08] mb-6 tracking-tight">
+            Tu sonrisa,
+            <span class="block bg-gradient-to-r from-teal-600 via-teal-500 to-amber-500 bg-clip-text text-transparent">nuestra pasión.</span>
+            <span class="block text-2xl sm:text-3xl lg:text-4xl text-gray-500 font-semibold mt-3">Especialistas en salud dental</span>
           </h1>
-          <p class="text-xl text-gray-600 mb-10 leading-relaxed">
+          <p class="text-base sm:text-lg lg:text-xl text-gray-600 mb-9 leading-relaxed">
             En Clinic Dentall ofrecemos atención personalizada con tecnología de punta para toda la familia. Recupera la confianza de sonreír con los mejores especialistas.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <a
               href="https://wa.me/522711398791"
               target="_blank"
-              class="bg-teal-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-teal-700 transition-all shadow-xl hover:shadow-teal-200/50 flex items-center justify-center gap-2 group"
+              class="bg-teal-600 text-white px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:bg-teal-700 transition-all shadow-xl shadow-teal-600/25 hover:shadow-teal-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
             >
               Agendar cita
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,166 +111,275 @@
             </a>
             <button
               (click)="scrollTo('servicios')"
-              class="bg-white text-gray-800 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 transition-all border-2 border-gray-100"
+              class="bg-white text-gray-800 px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:bg-gray-50 transition-all border-2 border-gray-100 hover:border-gray-200"
             >
               Ver servicios
             </button>
           </div>
-
-          <!-- Trust Indicators -->
-          <div class="mt-12 flex items-center gap-6">
-            <div class="flex -space-x-3">
-              <div class="w-12 h-12 rounded-full border-4 border-white bg-gray-200"></div>
-              <div class="w-12 h-12 rounded-full border-4 border-white bg-gray-300"></div>
-              <div class="w-12 h-12 rounded-full border-4 border-white bg-gray-400"></div>
-            </div>
-            <div>
-              <p class="text-gray-900 font-bold">+2,500 Pacientes</p>
-              <div class="flex text-yellow-400 text-sm">
-                ★★★★★ <span class="text-gray-500 ml-2 font-medium">5.0 Google Reviews</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div class="relative hidden md:block">
-          <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500 mx-auto max-w-[450px]">
-            <img
-              src="imagenes/portada.webp"
-              alt="Clínica Dental Moderna"
-              class="w-full h-[500px] object-cover"
-            >
+        <div class="relative order-first lg:order-last">
+          <div class="relative mx-auto max-w-[280px] sm:max-w-[400px] lg:max-w-[440px] scale-up">
+            <div class="absolute -inset-3 border-2 border-amber-200/70 rounded-[2rem] hidden sm:block"></div>
+            <div class="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl border-[6px] sm:border-8 border-white">
+              <img
+                src="imagenes/portada.webp"
+                alt="Clínica Dental Moderna"
+                class="w-full h-[300px] sm:h-[400px] lg:h-[480px] object-cover"
+              >
+            </div>
+
+            <!-- Floating availability pill -->
+            <div class="absolute -top-4 right-3 sm:-top-5 sm:right-6 z-20 bg-white pl-2.5 pr-4 py-2 rounded-full shadow-xl border border-gray-100 flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500"></span>
+              </span>
+              <span class="text-[11px] sm:text-xs font-bold text-gray-800">Citas disponibles hoy</span>
+            </div>
+
+            <!-- Floating trust card -->
+            <div class="absolute -bottom-6 -left-4 sm:-bottom-7 sm:-left-8 z-20 bg-white p-3.5 sm:p-4 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-3">
+              <div class="flex -space-x-3 shrink-0">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-teal-50 flex items-center justify-center text-teal-500">
+                  <svg viewBox="0 0 24 24" class="w-4.5 h-4.5" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="8.5" r="3.2" stroke-width="1.5"/>
+                    <path stroke-linecap="round" stroke-width="1.5" d="M5 20c0-3.6 3.1-6.2 7-6.2s7 2.6 7 6.2"/>
+                  </svg>
+                </div>
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-teal-600 flex items-center justify-center text-white text-[10px] font-bold">2.5k+</div>
+              </div>
+              <div>
+                <div class="flex gap-0.5 text-amber-400">
+                  <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+                </div>
+                <p class="text-gray-900 font-bold text-xs sm:text-sm mt-0.5">+2,500 Pacientes</p>
+              </div>
+            </div>
+
+            <div class="absolute -bottom-8 -right-8 w-32 h-32 sm:w-40 sm:h-40 bg-amber-400 rounded-full z-0 opacity-10 blur-2xl"></div>
           </div>
-          <!-- Decorative element -->
-          <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-teal-500 rounded-full z-0 animate-pulse opacity-20"></div>
+        </div>
+      </div>
+
+      <!-- Stats bridge bar -->
+      <div class="mt-16 sm:mt-20 lg:mt-24 relative z-20">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-900/5 border border-gray-100 px-6 sm:px-10 py-8 sm:py-9 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 lg:divide-x-2 divide-gray-50">
+          <div class="text-center lg:text-left">
+            <p class="text-3xl sm:text-4xl font-extrabold text-gray-900">2,500<span class="text-amber-500">+</span></p>
+            <p class="text-gray-500 text-xs sm:text-sm font-medium mt-1">Pacientes atendidos</p>
+          </div>
+          <div class="text-center lg:text-left lg:pl-6">
+            <p class="text-3xl sm:text-4xl font-extrabold text-gray-900">10<span class="text-amber-500">+</span></p>
+            <p class="text-gray-500 text-xs sm:text-sm font-medium mt-1">Años de experiencia</p>
+          </div>
+          <div class="text-center lg:text-left lg:pl-6">
+            <p class="text-3xl sm:text-4xl font-extrabold text-gray-900">4</p>
+            <p class="text-gray-500 text-xs sm:text-sm font-medium mt-1">Especialidades</p>
+          </div>
+          <div class="text-center lg:text-left lg:pl-6">
+            <p class="text-3xl sm:text-4xl font-extrabold text-gray-900 flex items-center justify-center lg:justify-start gap-1.5">
+              5.0
+              <svg viewBox="0 0 24 24" class="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" fill="currentColor"><polygon points="12,3 14.23,8.93 20.56,9.22 15.61,13.17 17.29,19.28 12,15.8 6.71,19.28 8.39,13.17 3.44,9.22 9.77,8.93"/></svg>
+            </p>
+            <p class="text-gray-500 text-xs sm:text-sm font-medium mt-1">Calificación Google</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Servicios Section -->
-  <section id="servicios" class="py-24 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">Nuestros Servicios</h2>
-        <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Tratamientos integrales para tu bienestar</h3>
-        <p class="text-lg text-gray-600">Utilizamos las técnicas más avanzadas para garantizar resultados excepcionales en cada procedimiento.</p>
+  <section id="servicios" class="relative pt-20 sm:pt-24 lg:pt-28 pb-28 sm:pb-32 lg:pb-36 bg-gray-50 overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16 text-center sm:text-left">
+        <div>
+          <h2 class="inline-flex items-center gap-2 text-teal-600 font-bold uppercase tracking-widest text-xs sm:text-sm mb-3 sm:mb-4">
+            <span class="w-6 h-[2px] bg-amber-500"></span> Nuestros Servicios
+          </h2>
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight max-w-xl">Tratamientos integrales para tu bienestar</h3>
+        </div>
+        <p class="text-base sm:text-lg text-gray-600 max-w-sm mx-auto sm:mx-0">Utilizamos las técnicas más avanzadas para garantizar resultados excepcionales en cada procedimiento.</p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">
         <!-- Servicio 1 -->
         <div
-          class="service-card bg-white p-8 rounded-3xl shadow-sm transition-all border-2 border-transparent group"
-          [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 0 : centeredServiceIndex() === 0) ? 'border-teal-500 shadow-xl -translate-y-2' : 'border-gray-100'"
-          data-index="0"
+          class="service-card relative bg-white p-7 sm:p-8 rounded-3xl shadow-sm border-2 border-gray-100 hover:border-teal-500 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
         >
-          <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-colors"
-               [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 0 : centeredServiceIndex() === 0) ? 'bg-teal-600 text-white' : ''">
-            🦷
+          <span class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 to-teal-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+          <span class="absolute top-6 right-7 text-[13px] font-bold text-gray-200">01</span>
+          <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 text-teal-600 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-7 h-7 sm:w-8 sm:h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3.5l7 2.8v5.2c0 4.6-3 8.2-7 9.5-4-1.3-7-4.9-7-9.5V6.3l7-2.8z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.7 12.2l2.4 2.4 4.2-4.6"/>
+            </svg>
           </div>
-          <h4 class="text-xl font-bold text-gray-900 mb-3">Implantología</h4>
-          <p class="text-gray-600">Recupera la funcionalidad y estética de tu sonrisa con implantes de alta durabilidad.</p>
+          <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2.5 sm:mb-3">Implantología</h4>
+          <p class="text-gray-600 text-[15px] sm:text-base leading-relaxed mb-4">Recupera la funcionalidad y estética de tu sonrisa con implantes de alta durabilidad.</p>
+          <span class="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            Saber más
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></svg>
+          </span>
         </div>
 
         <!-- Servicio 2 -->
         <div
-          class="service-card bg-white p-8 rounded-3xl shadow-sm transition-all border-2 border-transparent group"
-          [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 1 : centeredServiceIndex() === 1) ? 'border-blue-500 shadow-xl -translate-y-2' : 'border-gray-100'"
-          data-index="1"
+          class="service-card relative bg-white p-7 sm:p-8 rounded-3xl shadow-sm border-2 border-gray-100 hover:border-blue-500 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
         >
-          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-colors"
-               [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 1 : centeredServiceIndex() === 1) ? 'bg-blue-600 text-white' : ''">
-            😬
+          <span class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+          <span class="absolute top-6 right-7 text-[13px] font-bold text-gray-200">02</span>
+          <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-7 h-7 sm:w-8 sm:h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 9.3c1.4 3.7 3.9 6 6 6s4.6-2.3 6-6"/>
+              <path stroke-linecap="round" stroke-width="1.3" d="M8.1 12.4h7.8"/>
+              <circle cx="8.1" cy="12.4" r="1.15" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="13.4" r="1.15" fill="currentColor" stroke="none"/>
+              <circle cx="15.9" cy="12.4" r="1.15" fill="currentColor" stroke="none"/>
+            </svg>
           </div>
-          <h4 class="text-xl font-bold text-gray-900 mb-3">Ortodoncia</h4>
-          <p class="text-gray-600">Brackets y alineadores invisibles para alinear tus dientes de forma cómoda y eficaz.</p>
+          <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2.5 sm:mb-3">Ortodoncia</h4>
+          <p class="text-gray-600 text-[15px] sm:text-base leading-relaxed mb-4">Brackets y alineadores invisibles para alinear tus dientes de forma cómoda y eficaz.</p>
+          <span class="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            Saber más
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></svg>
+          </span>
         </div>
 
         <!-- Servicio 3 -->
         <div
-          class="service-card bg-white p-8 rounded-3xl shadow-sm transition-all border-2 border-transparent group"
-          [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 2 : centeredServiceIndex() === 2) ? 'border-purple-500 shadow-xl -translate-y-2' : 'border-gray-100'"
-          data-index="2"
+          class="service-card relative bg-white p-7 sm:p-8 rounded-3xl shadow-sm border-2 border-gray-100 hover:border-purple-500 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
         >
-          <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-colors"
-               [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 2 : centeredServiceIndex() === 2) ? 'bg-purple-600 text-white' : ''">
-            ✨
+          <span class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-400 to-purple-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+          <span class="absolute top-6 right-7 text-[13px] font-bold text-gray-200">03</span>
+          <div class="w-14 h-14 sm:w-16 sm:h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 sm:w-8 sm:h-8">
+              <path d="M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9-1.9 5.6-1.9-5.6-5.6-1.9 5.6-1.9L12 3.5z"/>
+              <path d="M18.5 3l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z" opacity=".7"/>
+            </svg>
           </div>
-          <h4 class="text-xl font-bold text-gray-900 mb-3">Estética Dental</h4>
-          <p class="text-gray-600">Carillas, blanqueamiento y diseño de sonrisa perfecta para resaltar tu belleza natural.</p>
+          <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2.5 sm:mb-3">Estética Dental</h4>
+          <p class="text-gray-600 text-[15px] sm:text-base leading-relaxed mb-4">Carillas, blanqueamiento y diseño de sonrisa perfecta para resaltar tu belleza natural.</p>
+          <span class="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            Saber más
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></svg>
+          </span>
         </div>
 
         <!-- Servicio 4 -->
         <div
-          class="service-card bg-white p-8 rounded-3xl shadow-sm transition-all border-2 border-transparent group"
-          [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 3 : centeredServiceIndex() === 3) ? 'border-amber-500 shadow-xl -translate-y-2' : 'border-gray-100'"
-          data-index="3"
+          class="service-card relative bg-white p-7 sm:p-8 rounded-3xl shadow-sm border-2 border-gray-100 hover:border-amber-500 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden"
         >
-          <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-colors"
-               [ngClass]="(centeredServiceIndex() === -1 ? activeServiceIndex() === 3 : centeredServiceIndex() === 3) ? 'bg-amber-600 text-white' : ''">
-            💎
+          <span class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-amber-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+          <span class="absolute top-6 right-7 text-[13px] font-bold text-gray-200">04</span>
+          <div class="w-14 h-14 sm:w-16 sm:h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-7 h-7 sm:w-8 sm:h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 17.5l-1.2-8 4.3 3.2L12 6.5l4.4 6.2 4.3-3.2-1.2 8h-15z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 17.5h15"/>
+            </svg>
           </div>
-          <h4 class="text-xl font-bold text-gray-900 mb-3">Rehabilitación Oral</h4>
-          <p class="text-gray-600">Prótesis y coronas de alta calidad para restaurar piezas dentales dañadas o perdidas.</p>
+          <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2.5 sm:mb-3">Rehabilitación Oral</h4>
+          <p class="text-gray-600 text-[15px] sm:text-base leading-relaxed mb-4">Prótesis y coronas de alta calidad para restaurar piezas dentales dañadas o perdidas.</p>
+          <span class="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            Saber más
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></svg>
+          </span>
         </div>
       </div>
+    </div>
+
+    <!-- Wave divider into Nosotros -->
+    <div class="absolute bottom-0 left-0 right-0 z-0 pointer-events-none">
+      <svg viewBox="0 0 1440 100" class="w-full h-14 sm:h-20 lg:h-24 text-white" fill="currentColor" preserveAspectRatio="none">
+        <path d="M0,40 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"/>
+      </svg>
     </div>
   </section>
 
   <!-- Nosotros Section -->
-  <section id="nosotros" class="py-24 bg-white overflow-hidden">
-    <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-2 gap-16 items-center">
-        <div class="relative order-2 md:order-1">
+  <section id="nosotros" class="relative py-20 sm:py-24 lg:py-28 bg-white overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 gap-16 lg:gap-20 items-center">
+        <div class="relative order-2 md:order-1 mt-6 md:mt-0">
+          <div class="absolute -inset-4 border-2 border-teal-100 rounded-[2.5rem] hidden sm:block"></div>
           <div class="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl">
             <img
               src="imagenes/Entrada.webp"
               alt="Nuestra Clínica"
-              class="w-full h-[500px] object-cover"
+              class="w-full h-[340px] sm:h-[420px] lg:h-[480px] object-cover"
             >
           </div>
-          <!-- Decorative elements -->
-          <div class="absolute -top-6 -left-6 w-32 h-32 bg-teal-100 rounded-full z-0"></div>
-          <div class="absolute -bottom-6 -right-6 w-48 h-48 border-4 border-blue-50 rounded-3xl z-0"></div>
+          <div class="absolute -top-6 -right-6 w-20 h-20 sm:w-28 sm:h-28 bg-amber-400 rounded-full z-0 opacity-20 blur-xl"></div>
+
+          <!-- Quote card -->
+          <div class="absolute top-6 -left-3 sm:top-10 sm:-left-8 z-20 bg-gray-900 text-white p-4 sm:p-5 rounded-2xl shadow-xl max-w-[170px] sm:max-w-[210px]">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-amber-400 mb-1.5">
+              <path d="M7.17 6A5.17 5.17 0 0 0 2 11.17c0 2.83 2.24 5.09 5 5.17v.01c-.1 1.7-1.1 2.9-2.5 3.4-.4.15-.5.65-.15.9.35.25.85.2 1.35 0C8.4 19.7 10 17.3 10 14V11.17A5.17 5.17 0 0 0 7.17 6zm10 0A5.17 5.17 0 0 0 12 11.17c0 2.83 2.24 5.09 5 5.17v.01c-.1 1.7-1.1 2.9-2.5 3.4-.4.15-.5.65-.15.9.35.25.85.2 1.35 0 2.7-.95 4.3-3.35 4.3-6.65V11.17A5.17 5.17 0 0 0 17.17 6z"/>
+            </svg>
+            <p class="text-xs sm:text-sm font-medium leading-snug">Cuidamos personas, no solo dientes.</p>
+          </div>
 
           <!-- Experience badge -->
-          <div class="absolute bottom-10 left-10 z-20 bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4 border border-teal-50">
-            <div class="text-4xl font-black text-teal-600">10+</div>
-            <div class="text-sm font-bold text-gray-800 leading-tight">Años<br>Transformando<br>Sonrisas</div>
+          <div class="absolute -bottom-6 right-4 sm:-bottom-8 sm:right-10 z-20 bg-white p-4 sm:p-6 rounded-2xl shadow-xl flex items-center gap-3 sm:gap-4 border border-gray-100">
+            <div class="text-3xl sm:text-4xl font-black text-teal-600">10+</div>
+            <div class="text-xs sm:text-sm font-bold text-gray-800 leading-tight">Años<br>Transformando<br>Sonrisas</div>
           </div>
         </div>
 
         <div class="order-1 md:order-2">
-          <h2 class="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">Sobre Nosotros</h2>
-          <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 leading-tight">Comprometidos con tu salud y confianza</h3>
-          <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+          <h2 class="inline-flex items-center gap-2 text-teal-600 font-bold uppercase tracking-widest text-xs sm:text-sm mb-4">
+            <span class="w-6 h-[2px] bg-amber-500"></span> Sobre Nosotros
+          </h2>
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 sm:mb-8 leading-tight">Comprometidos con tu salud y confianza</h3>
+          <p class="text-base sm:text-lg text-gray-600 mb-5 sm:mb-6 leading-relaxed">
             En Clinic Dentall, contamos con un equipo de especialistas dedicados a devolverte la confianza para sonreír. Nuestro enfoque no es solo tratar dientes, sino cuidar personas.
           </p>
-          <p class="text-lg text-gray-600 mb-10 leading-relaxed">
+          <p class="text-base sm:text-lg text-gray-600 mb-8 sm:mb-10 leading-relaxed">
             Un espacio moderno, acogedor y con tecnología de vanguardia. Más de 10 años transformando sonrisas en México nos respaldan como líderes en odontología integral.
           </p>
 
-          <div class="grid grid-cols-2 gap-6 mb-10">
-            <div class="flex items-start gap-3">
-              <div class="text-teal-600 mt-1">✓</div>
-              <p class="font-bold text-gray-800">Atención personalizada</p>
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10">
+            <div class="flex items-center gap-2.5 border border-gray-100 rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5 hover:border-teal-200 hover:bg-teal-50/40 transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-teal-600 shrink-0">
+                <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.2 12.4 2.4 2.4 5.2-5.4"/>
+              </svg>
+              <p class="font-semibold text-gray-800 text-[13px] sm:text-[15px]">Atención personalizada</p>
             </div>
-            <div class="flex items-start gap-3">
-              <div class="text-teal-600 mt-1">✓</div>
-              <p class="font-bold text-gray-800">Tecnología de punta</p>
+            <div class="flex items-center gap-2.5 border border-gray-100 rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5 hover:border-teal-200 hover:bg-teal-50/40 transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-teal-600 shrink-0">
+                <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.2 12.4 2.4 2.4 5.2-5.4"/>
+              </svg>
+              <p class="font-semibold text-gray-800 text-[13px] sm:text-[15px]">Tecnología de punta</p>
             </div>
-            <div class="flex items-start gap-3">
-              <div class="text-teal-600 mt-1">✓</div>
-              <p class="font-bold text-gray-800">Ambiente acogedor</p>
+            <div class="flex items-center gap-2.5 border border-gray-100 rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5 hover:border-teal-200 hover:bg-teal-50/40 transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-teal-600 shrink-0">
+                <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.2 12.4 2.4 2.4 5.2-5.4"/>
+              </svg>
+              <p class="font-semibold text-gray-800 text-[13px] sm:text-[15px]">Ambiente acogedor</p>
             </div>
-            <div class="flex items-start gap-3">
-              <div class="text-teal-600 mt-1">✓</div>
-              <p class="font-bold text-gray-800">Precios competitivos</p>
+            <div class="flex items-center gap-2.5 border border-gray-100 rounded-xl px-3.5 py-3 sm:px-4 sm:py-3.5 hover:border-teal-200 hover:bg-teal-50/40 transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-teal-600 shrink-0">
+                <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m8.2 12.4 2.4 2.4 5.2-5.4"/>
+              </svg>
+              <p class="font-semibold text-gray-800 text-[13px] sm:text-[15px]">Precios competitivos</p>
             </div>
           </div>
 
-          <button class="text-gray-900 font-bold flex items-center gap-2 hover:gap-4 transition-all">
-            Conocer a nuestro equipo <span class="text-teal-600">→</span>
+          <button (click)="scrollTo('contacto')" class="inline-flex items-center gap-3 bg-teal-600 text-white pl-6 pr-2 py-2 rounded-full font-bold text-sm hover:bg-teal-700 transition-all group">
+            Contáctanos
+            <span class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 group-hover:translate-x-0.5 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
           </button>
         </div>
       </div>
@@ -274,52 +387,99 @@
   </section>
 
   <!-- Contacto Section -->
-  <section id="contacto" class="py-24 bg-gray-900 text-white relative overflow-hidden">
+  <section id="contacto" class="py-20 sm:py-24 lg:py-28 bg-gray-900 text-white relative overflow-hidden">
     <!-- Abstract background -->
-    <div class="absolute top-0 right-0 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl -mr-48 -mt-48"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -ml-48 -mb-48"></div>
+    <div class="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-teal-600/10 rounded-full blur-3xl -mr-32 -mt-32 sm:-mr-48 sm:-mt-48"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-amber-500/10 rounded-full blur-3xl -ml-32 -mb-32 sm:-ml-48 sm:-mb-48"></div>
 
-    <div class="container mx-auto px-4 relative z-10">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-16">
-          <h2 class="text-teal-400 font-bold uppercase tracking-widest text-sm mb-4">Contacto</h2>
-          <h3 class="text-4xl md:text-5xl font-extrabold mb-6">Estamos aquí para ayudarte</h3>
-          <p class="text-gray-400 text-lg">Visítanos o contáctanos por cualquiera de nuestros canales oficiales.</p>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12 sm:mb-14">
+          <h2 class="inline-flex items-center justify-center gap-2 text-teal-400 font-bold uppercase tracking-widest text-xs sm:text-sm mb-4">
+            <span class="w-6 h-[2px] bg-amber-500"></span> Contacto <span class="w-6 h-[2px] bg-amber-500"></span>
+          </h2>
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 sm:mb-6">Estamos aquí para ayudarte</h3>
+          <p class="text-gray-400 text-base sm:text-lg">Visítanos o contáctanos por cualquiera de nuestros canales oficiales.</p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <!-- WhatsApp CTA banner -->
+        <div class="relative bg-gradient-to-r from-teal-600 to-teal-500 rounded-3xl p-7 sm:p-10 mb-8 sm:mb-10 overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+          <div class="absolute -right-10 -bottom-14 w-52 h-52 bg-white/10 rounded-full pointer-events-none"></div>
+          <div class="absolute -left-8 -top-14 w-40 h-40 bg-white/10 rounded-full pointer-events-none"></div>
+          <div class="relative z-10">
+            <h4 class="text-xl sm:text-2xl font-extrabold mb-1.5">¿Listo para tu próxima cita?</h4>
+            <p class="text-teal-50 text-sm sm:text-base">Escríbenos por WhatsApp y agenda en minutos.</p>
+          </div>
+          <a
+            href="https://wa.me/522711398791"
+            target="_blank"
+            class="relative z-10 shrink-0 bg-white text-teal-700 px-7 py-3.5 rounded-full font-bold hover:bg-gray-50 transition-all shadow-lg hover:-translate-y-0.5 flex items-center gap-2.5"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+              <path d="M12 2.75c-5.1 0-9.25 4.15-9.25 9.25 0 1.7.46 3.3 1.27 4.67L2.75 21.25l4.72-1.24a9.2 9.2 0 0 0 4.53 1.2c5.1 0 9.25-4.15 9.25-9.25S17.1 2.75 12 2.75zm0 16.8c-1.42 0-2.75-.4-3.87-1.09l-.28-.16-2.8.73.75-2.73-.18-.28a7.56 7.56 0 0 1-1.17-4.02c0-4.18 3.4-7.58 7.58-7.58s7.58 3.4 7.58 7.58-3.4 7.55-7.61 7.55z"/>
+              <path d="M16.2 14.1c-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.18-.5.06-.23-.12-.96-.35-1.83-1.13-.68-.6-1.13-1.35-1.27-1.58-.13-.23-.01-.35.1-.47.11-.11.23-.27.35-.41.11-.14.15-.23.23-.39.08-.16.04-.29-.02-.41-.06-.12-.52-1.25-.71-1.71-.19-.45-.38-.39-.52-.4h-.44c-.15 0-.4.06-.6.29-.21.23-.79.77-.79 1.87s.81 2.17.92 2.32c.12.16 1.6 2.44 3.88 3.42.54.23.97.37 1.3.48.55.17 1.05.15 1.44.09.44-.07 1.36-.55 1.55-1.09.19-.54.19-1 .13-1.09-.06-.1-.21-.15-.44-.27z"/>
+            </svg>
+            Chatear ahora
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           <!-- Address -->
-          <div class="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-all">
-            <div class="text-3xl mb-4">📍</div>
-            <h4 class="text-xl font-bold mb-2">Dirección</h4>
-            <p class="text-gray-400">Av. 11 113, entre Calles 1 y 3, Col. Centro, Córdoba, Ver.</p>
+          <div class="bg-white/5 backdrop-blur-md p-6 sm:p-7 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all flex gap-4">
+            <div class="w-11 h-11 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5c0 7.1-7.5 11.3-7.5 11.3S4.5 17.6 4.5 10.5a7.5 7.5 0 1 1 15 0z"/>
+                <circle cx="12" cy="10.5" r="3" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base sm:text-lg font-bold mb-1">Dirección</h4>
+              <p class="text-gray-400 text-sm sm:text-[15px]">Av. 11 113, entre Calles 1 y 3, Col. Centro, Córdoba, Ver.</p>
+            </div>
           </div>
 
           <!-- Phone & Email -->
-          <div class="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-all">
-            <div class="text-3xl mb-4">📞</div>
-            <h4 class="text-xl font-bold mb-2">Contacto Directo</h4>
-            <p class="text-gray-400">+52 271 139 8791</p>
-            <p class="text-gray-400 mt-1">contacto@dentall.mx</p>
+          <div class="bg-white/5 backdrop-blur-md p-6 sm:p-7 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all flex gap-4">
+            <div class="w-11 h-11 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.28 6.72 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.37c0-.52-.35-.97-.85-1.09l-4.42-1.11a1.13 1.13 0 0 0-1.18.42l-.97 1.29c-.28.38-.77.54-1.21.38a12.03 12.03 0 0 1-7.14-7.14c-.16-.44 0-.93.38-1.21l1.29-.97c.36-.27.53-.73.42-1.17L6.96 3.1a1.13 1.13 0 0 0-1.09-.85H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base sm:text-lg font-bold mb-1">Contacto Directo</h4>
+              <p class="text-gray-400 text-sm sm:text-[15px]">+52 271 139 8791</p>
+              <p class="text-gray-400 text-sm sm:text-[15px]">contacto&#64;dentall.mx</p>
+            </div>
           </div>
 
           <!-- Instagram -->
           <a
             href="https://www.instagram.com/clinic.dentall/"
             target="_blank"
-            class="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/10 transition-all group"
+            class="bg-white/5 backdrop-blur-md p-6 sm:p-7 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all flex gap-4 group sm:col-span-2 lg:col-span-1"
           >
-            <div class="text-3xl mb-4 group-hover:scale-110 transition-transform">📸</div>
-            <h4 class="text-xl font-bold mb-2">Instagram</h4>
-            <p class="text-gray-400">@clinic.dentall</p>
-            <p class="text-teal-400 mt-4 font-bold flex items-center gap-2">
-              Seguir <span>→</span>
-            </p>
+            <div class="w-11 h-11 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 shrink-0 group-hover:scale-110 transition-transform">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                <rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="4" stroke-width="1.5"/>
+                <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-base sm:text-lg font-bold mb-1">Instagram</h4>
+              <p class="text-gray-400 text-sm sm:text-[15px]">&#64;clinic.dentall</p>
+              <p class="text-teal-400 mt-1.5 font-bold flex items-center gap-1.5 text-sm">
+                Seguir
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </p>
+            </div>
           </a>
         </div>
 
         <!-- Google Maps Embed -->
-        <div class="mt-12 w-full h-[450px] bg-white/5 rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl">
+        <div class="mt-8 sm:mt-10 w-full h-[280px] sm:h-[360px] lg:h-[420px] bg-white/5 rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3774.22579123896!2d-96.93813152412891!3d18.89401335750875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c4e56bb676c6a7%3A0x8e4e0eb7d1be9d5f!2sCLINIC%20DENTall%20%7C%20Dentista%20en%20C%C3%B3rdoba%2C%20Veracruz!5e0!3m2!1ses-419!2smx!4v1718338900000!5m2!1ses-419!2smx"
             width="100%"
@@ -336,52 +496,67 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-white py-16 border-t border-gray-100">
-  <div class="container mx-auto px-4">
-    <div class="grid md:grid-cols-4 gap-12 mb-12">
-      <!-- Col 1: Logo -->
-      <div class="col-span-2">
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-2xl">🦷</span>
-          <span class="text-xl font-bold text-teal-600">Clinic Dentall</span>
+<footer class="bg-white pt-3 border-t-0">
+  <div class="h-1 w-full bg-gradient-to-r from-teal-500 via-teal-400 to-amber-400"></div>
+  <div class="py-12 sm:py-14">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12 mb-12">
+        <!-- Col 1: Logo -->
+        <div class="sm:col-span-2">
+          <img src="logoletras.png" alt="DENTall Córdoba" class="h-8 w-auto object-contain mb-5 sm:mb-6" />
+          <p class="text-gray-500 max-w-sm mb-6 text-[15px] sm:text-base leading-relaxed">
+            Líderes en salud dental con un compromiso inquebrantable con la excelencia y la ética médica. Tu sonrisa es nuestro mejor testimonio.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-teal-600 hover:text-white transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M15 8.5h-1.8c-.6 0-.9.3-.9.9V11h2.7l-.35 2.7h-2.35V21h-3v-7.3H7.3V11h2.05V9.1c0-2.2 1.3-3.6 3.5-3.6H15v3z"/>
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/clinic.dentall/" target="_blank" aria-label="Instagram" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-teal-600 hover:text-white transition-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5">
+                <rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="4" stroke-width="1.5"/>
+                <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <a href="https://wa.me/522711398791" target="_blank" aria-label="WhatsApp" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-teal-600 hover:text-white transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M12 2.75c-5.1 0-9.25 4.15-9.25 9.25 0 1.7.46 3.3 1.27 4.67L2.75 21.25l4.72-1.24a9.2 9.2 0 0 0 4.53 1.2c5.1 0 9.25-4.15 9.25-9.25S17.1 2.75 12 2.75zm0 16.8c-1.42 0-2.75-.4-3.87-1.09l-.28-.16-2.8.73.75-2.73-.18-.28a7.56 7.56 0 0 1-1.17-4.02c0-4.18 3.4-7.58 7.58-7.58s7.58 3.4 7.58 7.58-3.4 7.55-7.61 7.55z"/>
+                <path d="M16.2 14.1c-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.18-.5.06-.23-.12-.96-.35-1.83-1.13-.68-.6-1.13-1.35-1.27-1.58-.13-.23-.01-.35.1-.47.11-.11.23-.27.35-.41.11-.14.15-.23.23-.39.08-.16.04-.29-.02-.41-.06-.12-.52-1.25-.71-1.71-.19-.45-.38-.39-.52-.4h-.44c-.15 0-.4.06-.6.29-.21.23-.79.77-.79 1.87s.81 2.17.92 2.32c.12.16 1.6 2.44 3.88 3.42.54.23.97.37 1.3.48.55.17 1.05.15 1.44.09.44-.07 1.36-.55 1.55-1.09.19-.54.19-1 .13-1.09-.06-.1-.21-.15-.44-.27z"/>
+              </svg>
+            </a>
+          </div>
         </div>
-        <p class="text-gray-500 max-w-sm mb-6">
-          Líderes en salud dental con un compromiso inquebrantable con la excelencia y la ética médica. Tu sonrisa es nuestro mejor testimonio.
-        </p>
-        <div class="flex gap-4">
-          <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all">FB</a>
-          <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all">IG</a>
-          <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all">WA</a>
+
+        <!-- Col 2: Links -->
+        <div>
+          <h5 class="font-bold text-gray-900 mb-5 sm:mb-6 uppercase tracking-wider text-sm">Navegación</h5>
+          <ul class="grid gap-3 sm:gap-4">
+            <li><a (click)="scrollTo('inicio')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Inicio</a></li>
+            <li><a (click)="scrollTo('servicios')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Servicios</a></li>
+            <li><a (click)="scrollTo('nosotros')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Nosotros</a></li>
+            <li><a (click)="scrollTo('contacto')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Contacto</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Horarios -->
+        <div>
+          <h5 class="font-bold text-gray-900 mb-5 sm:mb-6 uppercase tracking-wider text-sm">Horarios</h5>
+          <ul class="grid gap-2.5 text-gray-500 text-[15px] sm:text-base">
+            <li class="flex justify-between gap-4"><span>Lun - Vie:</span> <span>9:00 - 19:00</span></li>
+            <li class="flex justify-between gap-4"><span>Sábado:</span> <span>10:00 - 14:00</span></li>
+            <li class="flex justify-between gap-4 font-bold text-teal-600 mt-2"><span>Domingo:</span> <span>Cerrado</span></li>
+          </ul>
         </div>
       </div>
 
-      <!-- Col 2: Links -->
-      <div>
-        <h5 class="font-bold text-gray-900 mb-6 uppercase tracking-wider text-sm">Navegación</h5>
-        <ul class="grid gap-4">
-          <li><a (click)="scrollTo('inicio')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Inicio</a></li>
-          <li><a (click)="scrollTo('servicios')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Servicios</a></li>
-          <li><a (click)="scrollTo('nosotros')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Nosotros</a></li>
-          <li><a (click)="scrollTo('contacto')" class="text-gray-500 hover:text-teal-600 cursor-pointer transition-colors">Contacto</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 3: Horarios -->
-      <div>
-        <h5 class="font-bold text-gray-900 mb-6 uppercase tracking-wider text-sm">Horarios</h5>
-        <ul class="grid gap-2 text-gray-500">
-          <li class="flex justify-between"><span>Lun - Vie:</span> <span>9:00 - 19:00</span></li>
-          <li class="flex justify-between"><span>Sábado:</span> <span>10:00 - 14:00</span></li>
-          <li class="flex justify-between font-bold text-teal-600 mt-2"><span>Domingo:</span> <span>Cerrado</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-      <p>© 2026 Clinic Dentall. Todos los derechos reservados.</p>
-      <div class="flex gap-6">
-        <a href="#" class="hover:text-teal-600">Aviso de Privacidad</a>
-        <a href="#" class="hover:text-teal-600">Términos de Servicio</a>
+      <div class="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400 text-center sm:text-left">
+        <p>&#169; 2026 Clinic Dentall. Todos los derechos reservados.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-teal-600 transition-colors">Aviso de Privacidad</a>
+          <a href="#" class="hover:text-teal-600 transition-colors">Términos de Servicio</a>
+        </div>
       </div>
     </div>
   </div>

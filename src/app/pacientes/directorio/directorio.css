@@ -93,7 +93,7 @@
 .topbar__bc-sep { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* ── Page ───────────────────────────────────────────────────────────────────── */
-.page { padding: 24px; display: flex; flex-direction: column; gap: 20px; max-width: 1100px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+.page { padding: 24px; display: flex; flex-direction: column; gap: 20px; max-width: 1600px; width: 100%; margin: 0 auto; box-sizing: border-box; }
 
 /* ── Hero ───────────────────────────────────────────────────────────────────── */
 .page__hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }

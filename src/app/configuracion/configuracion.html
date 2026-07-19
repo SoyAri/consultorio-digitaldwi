@@ -229,62 +229,52 @@
     (closed)="showResetModal = false" />
 }
 
-<!-- Modal de detalle de usuario -->
+<!-- Modal: detalle de usuario -->
 @if (showDetailModal && selectedStaff) {
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md">
-      
-      <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b border-gray-100">
-        <h2 class="text-lg font-semibold text-gray-900">Perfil del usuario</h2>
-        <button (click)="showDetailModal = false" class="text-gray-400 hover:text-gray-600">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
+  <div class="modal-backdrop" (click)="showDetailModal = false">
+    <div class="modal" (click)="$event.stopPropagation()">
 
-      <!-- Body -->
-      <div class="p-6 space-y-4">
-        <div class="flex items-center gap-4">
+      <div class="modal__header">
+        <div class="modal__header-left">
           <div class="avatar avatar--lg" [class]="selectedStaff.role === 'doctor' ? 'avatar--blue' : 'avatar--green'">
             {{ getInitials(selectedStaff.full_name) }}
           </div>
           <div>
-            <h3 class="font-semibold text-gray-900">{{ selectedStaff.full_name }}</h3>
-            <span class="text-sm text-gray-500">{{ getRoleLabel(selectedStaff.role) }}</span>
+            <h2 class="modal__title">{{ selectedStaff.full_name }}</h2>
+            <p class="modal__subtitle">{{ getRoleLabel(selectedStaff.role) }}</p>
           </div>
         </div>
+        <button class="modal__close" (click)="showDetailModal = false" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
 
-        <div class="space-y-3 pt-2">
-          <div>
-            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Correo</p>
-            <p class="text-gray-900">{{ selectedStaff.email }}</p>
-          </div>
-         
-          @if (selectedStaff.specialty) {
-            <div>
-              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Especialidad</p>
-              <p class="text-gray-900">{{ selectedStaff.specialty }}</p>
+      <div class="modal__body">
+        <div class="form-section">
+          <div class="info-rows">
+            <div class="info-row">
+              <span class="info-row__label">Correo</span>
+              <span class="info-row__value">{{ selectedStaff.email }}</span>
             </div>
-          }
+            @if (selectedStaff.specialty) {
+              <div class="info-row">
+                <span class="info-row__label">Especialidad</span>
+                <span class="info-row__value">{{ selectedStaff.specialty }}</span>
+              </div>
+            }
+          </div>
         </div>
       </div>
 
-      <!-- Footer -->
-
-    <div class="flex gap-3 p-6 border-t border-gray-100">
-      <button class="btn btn--ghost btn--sm flex-1" (click)="showDetailModal = false">
-        Volver
-      </button>
-      <button class="btn btn--ghost btn--sm flex-1" (click)="showDetailModal = false; openEditStaff(selectedStaff!)">
-        Editar
-      </button>
-      <button class="btn btn--sm flex-1" style="background:#EF4444; color:white; border:none"
-        (click)="eliminarStaff(selectedStaff!)">
-        Eliminar
-      </button>
-    </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" (click)="showDetailModal = false; eliminarStaff(selectedStaff!)" style="color:var(--color-red); border-color:var(--color-red-light)">
+          Eliminar
+        </button>
+        <div class="footer-actions">
+          <button class="btn btn--ghost" (click)="showDetailModal = false">Cerrar</button>
+          <button class="btn btn--primary" (click)="showDetailModal = false; openEditStaff(selectedStaff!)">Editar</button>
+        </div>
+      </div>
 
     </div>
   </div>
