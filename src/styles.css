@@ -5,23 +5,149 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #0F766E;
   --color-secondary: #14B8A6;
   --color-cta: #0369A1;
-  --color-bg: #F0FDFA;
-  --color-text: #134E4A;
-  --color-muted: #666666;
-  
+
+  /* marca */
+  --color-primary:        #0D9488;
+  /* --color-primary-dark: tono MAS OSCURO del primario, usado para estados hover/active.
+     No tiene relacion con el modo oscuro de la app (ver --color-* de mas abajo para eso). */
+  --color-primary-dark:   #0F766E;
+  --color-primary-light:  #CCFBF1;
+
+  /* superficies */
+  --color-bg:              #F8FAFC;
+  --color-surface:         #FFFFFF;
+  --color-border:          #E2E8F0;
+
+  /* texto */
+  --color-text:            #0F172A;
+  --color-text-muted:      #64748B;
+
+  /* semanticos */
+  --color-red:             #EF4444;
+  --color-red-light:       #FEE2E2;
+  --color-red-text:        #991B1B;
+  --color-green:           #10B981;
+  --color-green-light:     #D1FAE5;
+  --color-green-text:      #065F46;
+  --color-blue:            #3B82F6;
+  --color-blue-light:      #DBEAFE;
+  --color-blue-text:       #1E40AF;
+  --color-amber:           #F59E0B;
+  --color-amber-light:     #FEF3C7;
+  --color-amber-text:      #92400E;
+
+  /* estructura */
+  --radius:                12px;
+  --radius-sm:              8px;
+  --shadow-sm:              0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:              0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:              0 24px 64px rgba(0,0,0,.16);
+  --transition:             150ms ease;
+
+  color-scheme: light;
+
   --font-heading: 'Lexend', sans-serif;
   --font-body: 'Source Sans 3', sans-serif;
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+:root[data-theme="dark"] {
+  /* --color-primary se deja igual que en claro: ya tiene buen contraste como
+     texto sobre fondo oscuro (~4.8:1) y no rompe el contraste de los botones
+     sólidos con texto blanco (--color-primary-dark sí se aclara, porque se usa
+     como texto sobre el chip --color-primary-light, que en oscuro es un fondo
+     oscuro). */
+  --color-primary-dark:   #2DD4BF;
+  --color-primary-light:  #134E4A;
+
+  --color-bg:              #0F172A;
+  --color-surface:         #1E293B;
+  --color-border:          #334155;
+
+  --color-text:            #F1F5F9;
+  --color-text-muted:      #94A3B8;
+
+  --color-red:             #F87171;
+  --color-red-light:       #451A1A;
+  --color-red-text:        #FCA5A5;
+  --color-green:           #34D399;
+  --color-green-light:     #14342A;
+  --color-green-text:      #6EE7B7;
+  --color-blue:            #60A5FA;
+  --color-blue-light:      #1E2A4A;
+  --color-blue-text:       #93C5FD;
+  --color-amber:           #FBBF24;
+  --color-amber-light:     #453310;
+  --color-amber-text:      #FCD34D;
+
+  --shadow-sm:              0 1px 3px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md:              0 4px 16px rgba(0,0,0,.5);
+  --shadow-lg:              0 24px 64px rgba(0,0,0,.6);
+
+  color-scheme: dark;
+}
+
+/* Transición pareja para el cambio de tema: todo elemento anima sus colores
+   con la misma duración, así el cambio se siente como un solo fundido en vez
+   de una mezcla de elementos instantáneos y elementos con su propia transition
+   de hover (ver los distintos `transition: background ...` del resto del CSS). */
+*, *::before, *::after {
+  transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 220ms ease;
+}
+
+/* ── Herramientas de accesibilidad (portal del paciente) ─────────────────────
+   Ver AccessibilityService / AccessibilityWidget. Se aplican como clases sobre
+   el contenedor raíz de cada página del portal, cascadeando a todo lo de
+   adentro con selectores descendientes normales (no dependen de utilidades
+   de Tailwind, funcionan sobre cualquier markup). */
+.a11y-underline a {
+  text-decoration: underline !important;
+}
+
+.a11y-dyslexia,
+.a11y-dyslexia * {
+  font-family: Verdana, Tahoma, sans-serif !important;
+  letter-spacing: 0.03em !important;
+}
+
+.a11y-spacing,
+.a11y-spacing * {
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.7 !important;
+}
+
+.a11y-reduce-motion,
+.a11y-reduce-motion *,
+.a11y-reduce-motion *::before,
+.a11y-reduce-motion *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Invierte luminosidad preservando la relación entre colores (mismo truco que
+   "Smart Invert" de iOS) — funciona sin importar si el elemento usa
+   var(--color-*) o clases Tailwind fijas. Se re-invierten imágenes/SVGs para
+   que no se vean como negativo fotográfico. */
+.a11y-contrast {
+  filter: invert(1) hue-rotate(180deg) contrast(1.1);
+}
+.a11y-contrast img,
+.a11y-contrast svg {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: var(--font-body);
-  color: var(--color-text);
+  /* Fijos (no reactivos al tema): cada página con modo oscuro ya pinta su
+     propio fondo y color de texto completos (.layout, bg-gray-50/dark:bg-slate-900,
+     etc). Si el body reaccionara al tema, se filtraría un fondo/texto oscuro
+     por detrás de la landing pública, que deliberadamente no tiene modo oscuro. */
+  color: #0F172A;
   background-color: white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,21 +161,21 @@ h1, h2, h3, h4 {
 /* Fixes globales */
 input::placeholder,
 textarea::placeholder {
-  color: #64748B !important;
+  color: var(--color-text-muted) !important;
   opacity: 1 !important;
 }
 
 .form-hint {
-  color: #475569 !important;
+  color: var(--color-text-muted) !important;
   font-size: 12px !important;
 }
 
 .form-input {
-  border-color: #94A3B8 !important;
+  border-color: var(--color-border) !important;
 }
 
 .form-input:focus {
-  border-color: #0D9488 !important;
+  border-color: var(--color-primary) !important;
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2) !important;
 }
 
@@ -67,17 +193,17 @@ textarea::placeholder {
   justify-content: center;
   width: 34px;
   height: 34px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface);
   cursor: pointer;
-  color: #64748B;
+  color: var(--color-text-muted);
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .paginator__btn:hover:not(:disabled) {
-  background: #F8FAFC;
-  border-color: #0D9488;
-  color: #0D9488;
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 .paginator__btn:disabled {
   opacity: 0.35;
@@ -89,7 +215,7 @@ textarea::placeholder {
 }
 .paginator__info {
   font-size: 13px;
-  color: #64748B;
+  color: var(--color-text-muted);
   min-width: 100px;
   text-align: center;
 }

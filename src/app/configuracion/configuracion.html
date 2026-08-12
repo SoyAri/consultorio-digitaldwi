@@ -60,10 +60,15 @@
         } @else {
           <div class="staff-grid">
             @for (member of pagedDoctors(); track member.id_usuario) {
-              <div class="staff-card" (click)="verDetalle(member)" style="cursor:pointer">
+              <div class="staff-card">
                 <div class="staff-card__top">
                   <div class="avatar avatar--lg avatar--blue">{{ getInitials(member.full_name) }}</div>
-                  <span class="badge badge--blue">Doctor</span>
+                  <div class="staff-card__top-right">
+                    <span class="badge badge--blue">Doctor</span>
+                    <button class="staff-card__menu-btn" (click)="verDetalle(member)" aria-label="Más opciones" title="Más opciones">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+                    </button>
+                  </div>
                 </div>
                 <div class="staff-card__body">
                   <h3 class="staff-card__name">{{ member.full_name }}</h3>
@@ -76,11 +81,11 @@
                   </p>
                 </div>
                 <div class="staff-card__actions">
-                  <button class="btn btn--ghost btn--sm" (click)="openEditStaff(member)">
+                  <button class="btn btn--ghost btn--sm" (click)="$event.stopPropagation(); openEditStaff(member)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     Editar
                   </button>
-                  <button class="btn btn--ghost btn--sm" (click)="openResetPassword(member.email)">
+                  <button class="btn btn--ghost btn--sm" (click)="$event.stopPropagation(); openResetPassword(member.email)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     Contraseña
                   </button>
@@ -117,10 +122,15 @@
         } @else {
           <div class="staff-grid">
             @for (member of pagedAdmins(); track member.id_usuario) {
-              <div class="staff-card" (click)="verDetalle(member)" style="cursor:pointer">
+              <div class="staff-card">
                 <div class="staff-card__top">
                   <div class="avatar avatar--lg avatar--green">{{ getInitials(member.full_name) }}</div>
-                  <span class="badge badge--green">Secretaria/o</span>
+                  <div class="staff-card__top-right">
+                    <span class="badge badge--green">Secretaria/o</span>
+                    <button class="staff-card__menu-btn" (click)="verDetalle(member)" aria-label="Más opciones" title="Más opciones">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+                    </button>
+                  </div>
                 </div>
                 <div class="staff-card__body">
                   <h3 class="staff-card__name">{{ member.full_name }}</h3>
@@ -131,11 +141,11 @@
                   </p>
                 </div>
                 <div class="staff-card__actions">
-                  <button class="btn btn--ghost btn--sm" (click)="openEditStaff(member)">
+                  <button class="btn btn--ghost btn--sm" (click)="$event.stopPropagation(); openEditStaff(member)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     Editar
                   </button>
-                  <button class="btn btn--ghost btn--sm" (click)="openResetPassword(member.email)">
+                  <button class="btn btn--ghost btn--sm" (click)="$event.stopPropagation(); openResetPassword(member.email)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     Contraseña
                   </button>

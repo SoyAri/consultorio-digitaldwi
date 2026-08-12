@@ -1,0 +1,90 @@
+<button
+  type="button"
+  class="a11y-fab"
+  (click)="toggleOpen()"
+  [attr.aria-expanded]="open()"
+  aria-label="Herramientas de accesibilidad"
+  title="Herramientas de accesibilidad"
+>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4" r="2"/><line x1="6" y1="9" x2="18" y2="9"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="12" y1="15" x2="8" y2="21"/><line x1="12" y1="15" x2="16" y2="21"/></svg>
+</button>
+
+@if (open()) {
+  <div class="a11y-panel" role="dialog" aria-label="Herramientas de accesibilidad">
+    <div class="a11y-panel__header">
+      <h2>Accesibilidad</h2>
+      <button type="button" class="a11y-panel__close" (click)="close()" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="a11y-panel__body">
+
+      <!-- Tamaño de texto -->
+      <div class="a11y-font-row">
+        <span class="a11y-font-row__label">Tamaño de texto</span>
+        <div class="a11y-font-row__controls">
+          <button type="button" (click)="a11y.decreaseFont()" aria-label="Reducir tamaño de texto">A-</button>
+          <span class="a11y-font-row__value">{{ fontPercent() }}%</span>
+          <button type="button" (click)="a11y.increaseFont()" aria-label="Aumentar tamaño de texto">A+</button>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="a11y-grid">
+        <button type="button" class="a11y-tool" [class.a11y-tool--active]="a11y.prefs().highContrast" (click)="a11y.toggleHighContrast()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
+          Alto contraste
+        </button>
+        <button type="button" class="a11y-tool" [class.a11y-tool--active]="a11y.prefs().underlineLinks" (click)="a11y.toggleUnderlineLinks()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="5" y="16" font-size="12" fill="currentColor" stroke="none" font-weight="700">A</text><line x1="4" y1="20" x2="18" y2="20"/></svg>
+          Subrayar enlaces
+        </button>
+        <button type="button" class="a11y-tool" [class.a11y-tool--active]="a11y.prefs().dyslexiaFont" (click)="a11y.toggleDyslexiaFont()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V4M4 4h9a4 4 0 0 1 0 8H4M4 12h10a4 4 0 0 1 0 8H4"/></svg>
+          Fuente dislexia
+        </button>
+        <button type="button" class="a11y-tool" [class.a11y-tool--active]="a11y.prefs().textSpacing" (click)="a11y.toggleTextSpacing()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Espaciado de texto
+        </button>
+        <button type="button" class="a11y-tool" [class.a11y-tool--active]="a11y.prefs().reduceMotion" (click)="a11y.toggleReduceMotion()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+          Reducir animación
+        </button>
+      </div>
+
+      <!-- Lectura en voz alta -->
+      <div class="a11y-reading">
+        @if (!a11y.isReading()) {
+          <button type="button" class="a11y-action-btn a11y-action-btn--primary a11y-action-btn--full" (click)="a11y.startReading()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Leer página
+          </button>
+        } @else {
+          <div class="a11y-reading__controls">
+            @if (!a11y.isPaused()) {
+              <button type="button" class="a11y-action-btn" (click)="a11y.pauseReading()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="4" x2="10" y2="20"/><line x1="14" y1="4" x2="14" y2="20"/></svg>
+                Pausar
+              </button>
+            } @else {
+              <button type="button" class="a11y-action-btn" (click)="a11y.resumeReading()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Reanudar
+              </button>
+            }
+            <button type="button" class="a11y-action-btn a11y-action-btn--ghost" (click)="a11y.stopReading()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14"/></svg>
+              Detener
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="a11y-panel__footer">
+      <button type="button" class="a11y-reset" (click)="a11y.reset()">Restablecer</button>
+    </div>
+  </div>
+}

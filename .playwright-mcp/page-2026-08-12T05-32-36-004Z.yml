@@ -1,0 +1,156 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - img "DENTall Córdoba" [ref=e8] [cursor=pointer]
+      - navigation [ref=e9]:
+        - generic [ref=e10] [cursor=pointer]: Inicio
+        - generic [ref=e11] [cursor=pointer]: Servicios
+        - generic [ref=e12] [cursor=pointer]: Nosotros
+        - generic [ref=e13] [cursor=pointer]: Contacto
+      - generic [ref=e14]:
+        - button "¿Ya eres paciente?" [ref=e15] [cursor=pointer]
+        - button "Personal" [ref=e16] [cursor=pointer]
+  - main [ref=e17]:
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]: Clínica Dental de Especialidades
+          - heading "Tu sonrisa, nuestra pasión. Especialistas en salud dental" [level=1] [ref=e28]:
+            - text: Tu sonrisa,
+            - generic [ref=e29]: nuestra pasión.
+            - generic [ref=e30]: Especialistas en salud dental
+          - paragraph [ref=e31]: En Clinic Dentall ofrecemos atención personalizada con tecnología de punta para toda la familia. Recupera la confianza de sonreír con los mejores especialistas.
+          - generic [ref=e32]:
+            - link "Agendar cita" [ref=e33] [cursor=pointer]:
+              - /url: https://wa.me/522711398791
+            - button "Ver servicios" [ref=e36] [cursor=pointer]
+        - generic [ref=e38]:
+          - img "Clínica Dental Moderna" [ref=e41]
+          - generic [ref=e42]: Citas disponibles hoy
+          - generic [ref=e47]:
+            - generic [ref=e48]: 2.5k+
+            - paragraph [ref=e66]: +2,500 Pacientes
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - paragraph [ref=e71]: 2,500+
+          - paragraph [ref=e72]: Pacientes atendidos
+        - generic [ref=e73]:
+          - paragraph [ref=e74]: 10+
+          - paragraph [ref=e75]: Años de experiencia
+        - generic [ref=e76]:
+          - paragraph [ref=e77]: "4"
+          - paragraph [ref=e78]: Especialidades
+        - generic [ref=e79]:
+          - paragraph [ref=e80]: "5.0"
+          - paragraph [ref=e83]: Calificación Google
+    - generic [ref=e85]:
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - heading "Nuestros Servicios" [level=2] [ref=e88]
+          - heading "Tratamientos integrales para tu bienestar" [level=3] [ref=e90]
+        - paragraph [ref=e91]: Utilizamos las técnicas más avanzadas para garantizar resultados excepcionales en cada procedimiento.
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]: "01"
+          - heading "Implantología" [level=4] [ref=e99]
+          - paragraph [ref=e100]: Recupera la funcionalidad y estética de tu sonrisa con implantes de alta durabilidad.
+          - generic [ref=e101]: Saber más
+        - generic [ref=e104]:
+          - generic [ref=e105]: "02"
+          - heading "Ortodoncia" [level=4] [ref=e112]
+          - paragraph [ref=e113]: Brackets y alineadores invisibles para alinear tus dientes de forma cómoda y eficaz.
+          - generic [ref=e114]: Saber más
+        - generic [ref=e117]:
+          - generic [ref=e118]: "03"
+          - heading "Estética Dental" [level=4] [ref=e123]
+          - paragraph [ref=e124]: Carillas, blanqueamiento y diseño de sonrisa perfecta para resaltar tu belleza natural.
+          - generic [ref=e125]: Saber más
+        - generic [ref=e128]:
+          - generic [ref=e129]: "04"
+          - heading "Rehabilitación Oral" [level=4] [ref=e133]
+          - paragraph [ref=e134]: Prótesis y coronas de alta calidad para restaurar piezas dentales dañadas o perdidas.
+          - generic [ref=e135]: Saber más
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - img "Nuestra Clínica" [ref=e144]
+        - paragraph [ref=e149]: Cuidamos personas, no solo dientes.
+        - generic [ref=e150]:
+          - generic [ref=e151]: 10+
+          - generic [ref=e152]: AñosTransformandoSonrisas
+      - generic [ref=e153]:
+        - heading "Sobre Nosotros" [level=2] [ref=e154]
+        - heading "Comprometidos con tu salud y confianza" [level=3] [ref=e156]
+        - paragraph [ref=e157]: En Clinic Dentall, contamos con un equipo de especialistas dedicados a devolverte la confianza para sonreír. Nuestro enfoque no es solo tratar dientes, sino cuidar personas.
+        - paragraph [ref=e158]: Un espacio moderno, acogedor y con tecnología de vanguardia. Más de 10 años transformando sonrisas en México nos respaldan como líderes en odontología integral.
+        - generic [ref=e159]:
+          - paragraph [ref=e164]: Atención personalizada
+          - paragraph [ref=e169]: Tecnología de punta
+          - paragraph [ref=e174]: Ambiente acogedor
+          - paragraph [ref=e179]: Precios competitivos
+        - button [ref=e180] [cursor=pointer]
+    - generic [ref=e188]:
+      - generic [ref=e189]:
+        - heading "Contacto" [level=2] [ref=e190]
+        - heading "Estamos aquí para ayudarte" [level=3] [ref=e193]
+        - paragraph [ref=e194]: Visítanos o contáctanos por cualquiera de nuestros canales oficiales.
+      - generic [ref=e195]:
+        - generic [ref=e196]:
+          - heading "¿Listo para tu próxima cita?" [level=4] [ref=e197]
+          - paragraph [ref=e198]: Escríbenos por WhatsApp y agenda en minutos.
+        - link "Chatear ahora" [ref=e199] [cursor=pointer]:
+          - /url: https://wa.me/522711398791
+      - generic [ref=e203]:
+        - generic [ref=e209]:
+          - heading "Dirección" [level=4] [ref=e210]
+          - paragraph [ref=e211]: Av. 11 113, entre Calles 1 y 3, Col. Centro, Córdoba, Ver.
+        - generic [ref=e216]:
+          - heading "Contacto Directo" [level=4] [ref=e217]
+          - paragraph [ref=e218]: +52 271 139 8791
+          - paragraph [ref=e219]: contacto@dentall.mx
+        - link [ref=e220] [cursor=pointer]:
+          - /url: https://www.instagram.com/clinic.dentall/
+          - generic [ref=e226]:
+            - heading "Instagram" [level=4] [ref=e227]
+            - paragraph [ref=e228]: "@clinic.dentall"
+            - paragraph [ref=e229]: Seguir
+      - iframe [ref=e233]:
+        
+  - contentinfo [ref=e234]:
+    - generic [ref=e237]:
+      - generic [ref=e238]:
+        - generic [ref=e239]:
+          - img "DENTall Córdoba" [ref=e240]
+          - paragraph [ref=e241]: Líderes en salud dental con un compromiso inquebrantable con la excelencia y la ética médica. Tu sonrisa es nuestro mejor testimonio.
+          - generic [ref=e242]:
+            - link "Facebook" [ref=e243] [cursor=pointer]:
+              - /url: "#"
+            - link "Instagram" [ref=e246] [cursor=pointer]:
+              - /url: https://www.instagram.com/clinic.dentall/
+            - link "WhatsApp" [ref=e251] [cursor=pointer]:
+              - /url: https://wa.me/522711398791
+        - generic [ref=e255]:
+          - heading "Navegación" [level=5] [ref=e256]
+          - list [ref=e257]:
+            - listitem [ref=e258]: Inicio
+            - listitem [ref=e259]: Servicios
+            - listitem [ref=e260]: Nosotros
+            - listitem [ref=e261]: Contacto
+        - generic [ref=e262]:
+          - heading "Horarios" [level=5] [ref=e263]
+          - list [ref=e264]:
+            - listitem [ref=e265]:
+              - generic [ref=e266]: "Lun - Vie:"
+              - generic [ref=e267]: 9:00 - 19:00
+            - listitem [ref=e268]:
+              - generic [ref=e269]: "Sábado:"
+              - generic [ref=e270]: 10:00 - 14:00
+            - listitem [ref=e271]:
+              - generic [ref=e272]: "Domingo:"
+              - generic [ref=e273]: Cerrado
+      - generic [ref=e274]:
+        - paragraph [ref=e275]: © 2026 Clinic Dentall. Todos los derechos reservados.
+        - generic [ref=e276]:
+          - link "Aviso de Privacidad" [ref=e277] [cursor=pointer]:
+            - /url: "#"
+          - link "Términos de Servicio" [ref=e278] [cursor=pointer]:
+            - /url: "#"

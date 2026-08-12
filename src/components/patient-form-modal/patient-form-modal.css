@@ -1,12 +1,4 @@
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #64748B;
   --radius:              12px;
   --radius-sm:           8px;
   --transition:          150ms ease;
@@ -373,14 +365,14 @@
 }
 
 .form-error {
-  color: #EF4444;
+  color: var(--color-red);
   font-size: 12px;
   margin-top: 4px;
 }
 
 .form-input--error {
-  border-color: #EF4444 !important;
-  outline-color: #EF4444;
+  border-color: var(--color-red) !important;
+  outline-color: var(--color-red);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */

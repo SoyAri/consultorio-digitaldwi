@@ -1,18 +1,4 @@
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #334155;
-  --color-amber:         #F59E0B;
-  --color-amber-light:   #FEF3C7;
-  --color-green:         #10B981;
-  --color-green-light:   #D1FAE5;
-  --color-red:           #EF4444;
-  --color-red-light:     #FEE2E2;
   --radius:              12px;
   --radius-sm:           8px;
   --transition:          150ms ease;
@@ -79,8 +65,8 @@
 }
 
 .modal__header-icon--edit {
-  background: #EFF6FF;
-  color: #3B82F6;
+  background: var(--color-blue-light);
+  color: var(--color-blue);
 }
 
 .modal__header-icon svg { width: 20px; height: 20px; }
@@ -215,10 +201,10 @@
 
 .status-btn input { display: none; }
 
-.status-btn--pendiente.status-btn--active  { background: var(--color-amber-light); border-color: var(--color-amber); color: #92400E; }
+.status-btn--pendiente.status-btn--active  { background: var(--color-amber-light); border-color: var(--color-amber); color: var(--color-amber-text); }
 .status-btn--en_curso.status-btn--active   { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary-dark); }
-.status-btn--completada.status-btn--active { background: var(--color-green-light); border-color: var(--color-green); color: #065F46; }
-.status-btn--cancelada.status-btn--active  { background: var(--color-red-light); border-color: var(--color-red); color: #991B1B; }
+.status-btn--completada.status-btn--active { background: var(--color-green-light); border-color: var(--color-green); color: var(--color-green-text); }
+.status-btn--cancelada.status-btn--active  { background: var(--color-red-light); border-color: var(--color-red); color: var(--color-red-text); }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 .modal__footer {
@@ -268,7 +254,7 @@
 /* ── Placeholders ────────────────────────────────────────────────────────── */
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #475569;
+  color: var(--color-text-muted);
   opacity: 1;
   font-size: 14px;
 }

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DatabaseService } from '../../services/database.service';
 import { SupabaseService } from '../../services/supabase.service';
 import { environment } from '../../../environments/environment';
+import { ThemeToggle } from '../../../components/theme-toggle/theme-toggle';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO OTP
@@ -103,7 +104,7 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string)
 
 @Component({
   selector: 'app-login-paciente',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ThemeToggle],
   templateUrl: './login-paciente.html',
   styleUrl: './login-paciente.css',
 })

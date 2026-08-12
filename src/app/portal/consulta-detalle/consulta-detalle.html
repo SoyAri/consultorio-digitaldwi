@@ -1,12 +1,19 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50 dark:bg-slate-900"
+     [class.a11y-contrast]="a11y.prefs().highContrast"
+     [class.a11y-underline]="a11y.prefs().underlineLinks"
+     [class.a11y-dyslexia]="a11y.prefs().dyslexiaFont"
+     [class.a11y-spacing]="a11y.prefs().textSpacing"
+     [class.a11y-reduce-motion]="a11y.prefs().reduceMotion"
+     [style.zoom]="a11y.prefs().fontScale">
 
   <!-- Header -->
-  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4">
+  <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center gap-4">
     <button (click)="goBack()"
-      class="text-sm text-gray-500 hover:text-teal-600 transition-colors flex items-center gap-1">
+      class="text-sm text-gray-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1">
       ← Volver
     </button>
-    <h1 class="text-sm font-semibold text-gray-900">Detalle de consulta</h1>
+    <h1 class="text-sm font-semibold text-gray-900 dark:text-slate-100 flex-1">Detalle de consulta</h1>
+    <app-theme-toggle />
   </header>
 
   <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -20,49 +27,49 @@
 
     <!-- Datos -->
     @if (consulta()) {
-      <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 space-y-4">
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Fecha</p>
-          <p class="text-gray-900 font-medium capitalize">{{ formatDate(consulta()!.visit_date) }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Fecha</p>
+          <p class="text-gray-900 dark:text-slate-100 font-medium capitalize">{{ formatDate(consulta()!.visit_date) }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Doctor</p>
-          <p class="text-gray-900">{{ consulta()!.doctor_name }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Doctor</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.doctor_name }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Motivo</p>
-          <p class="text-gray-900">{{ consulta()!.chief_complaint || '—' }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Motivo</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.chief_complaint || '—' }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Diagnóstico</p>
-          <p class="text-gray-900">{{ consulta()!.diagnosis || '—' }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Diagnóstico</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.diagnosis || '—' }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Tratamiento</p>
-          <p class="text-gray-900">{{ consulta()!.treatment || '—' }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Tratamiento</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.treatment || '—' }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Observaciones</p>
-          <p class="text-gray-900">{{ consulta()!.observations || '—' }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Observaciones</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.observations || '—' }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Próxima visita</p>
-          <p class="text-gray-900">{{ consulta()!.next_visit_date ? formatDate(consulta()!.next_visit_date!) : '—' }}</p>
+          <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide">Próxima visita</p>
+          <p class="text-gray-900 dark:text-slate-100">{{ consulta()!.next_visit_date ? formatDate(consulta()!.next_visit_date!) : '—' }}</p>
         </div>
 
         @if (consulta()!.prescriptions.length) {
           <div>
-            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Receta</p>
+            <p class="text-xs font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide mb-2">Receta</p>
             <ul class="space-y-2">
               @for (rx of consulta()!.prescriptions; track rx.medicine) {
-                <li class="bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700">
+                <li class="bg-gray-50 dark:bg-slate-700/50 rounded-xl px-4 py-3 text-sm text-gray-700 dark:text-slate-300">
                   <span class="font-medium">{{ rx.medicine }}</span>
                   · {{ rx.dosage }} · {{ rx.frequency }} · {{ rx.duration }}
                 </li>
@@ -75,4 +82,6 @@
     }
 
   </main>
+
+  <app-accessibility-widget />
 </div>

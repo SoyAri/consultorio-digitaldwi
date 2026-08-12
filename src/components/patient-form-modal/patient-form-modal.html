@@ -153,7 +153,7 @@
                 </select>
               } @else {
                 <!-- Doctor ve su propio nombre, el ID ya viene pre-cargado -->
-                <select class="form-input bg-gray-50" [(ngModel)]="form.assigned_doctor_id"
+                <select class="form-input" style="background: var(--color-bg)" [(ngModel)]="form.assigned_doctor_id"
                   name="assigned_doctor_id" disabled>
                   @for (doc of doctors; track doc.id_usuario) {
                     <option [value]="doc.id_usuario">{{ doc.full_name }} — {{ doc.specialty }}</option>

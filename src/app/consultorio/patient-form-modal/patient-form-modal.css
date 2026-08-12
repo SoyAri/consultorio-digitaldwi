@@ -1,16 +1,7 @@
-/* ── Tokens heredados del host ──────────────────────────────────────────────
-   Los tokens de color y spacing se definen en consultorio.css vía :host.
-   Aquí los repetimos para que el componente funcione si se usa en otro contexto.
+/* ── Tokens heredados ──────────────────────────────────────────────────────
+   Los tokens de color se definen globalmente en styles.css vía :root.
    ─────────────────────────────────────────────────────────────────────────── */
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #64748B;
   --radius:              12px;
   --radius-sm:           8px;
   --transition:          150ms ease;
