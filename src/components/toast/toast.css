@@ -17,7 +17,7 @@
   border-radius: 10px;
   min-width: 260px;
   max-width: 380px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  box-shadow: var(--shadow-md);
   font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   pointer-events: all;
@@ -30,19 +30,19 @@
 }
 
 .toast--success {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #15803d;
+  background: var(--color-green-light);
+  border: 1px solid var(--color-green);
+  color: var(--color-green-text);
 }
 .toast--error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
+  background: var(--color-red-light);
+  border: 1px solid var(--color-red);
+  color: var(--color-red-text);
 }
 .toast--info {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
+  background: var(--color-blue-light);
+  border: 1px solid var(--color-blue);
+  color: var(--color-blue-text);
 }
 
 .toast__icon {

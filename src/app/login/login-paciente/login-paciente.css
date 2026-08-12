@@ -1,14 +1,4 @@
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #64748B;
-  --color-red:           #EF4444;
-  --color-red-light:     #FEE2E2;
   --radius:              14px;
   --radius-sm:           8px;
   --transition:          150ms ease;
@@ -114,6 +104,7 @@
 
 /* ── Form panel ─────────────────────────────────────────────────────────────── */
 .login-form-panel {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: center;
@@ -121,6 +112,12 @@
   padding: 32px 24px;
   background: var(--color-bg);
   overflow-y: auto;
+}
+
+.theme-toggle-anchor {
+  position: absolute;
+  top: 16px;
+  right: 16px;
 }
 
 .login-card {
@@ -185,7 +182,7 @@
   margin-bottom: 16px;
 }
 .alert svg { width: 16px; height: 16px; flex-shrink: 0; }
-.alert--error { background: var(--color-red-light); color: #991B1B; }
+.alert--error { background: var(--color-red-light); color: var(--color-red-text); }
 
 /* ── Form ───────────────────────────────────────────────────────────────────── */
 .login-form {
@@ -304,11 +301,11 @@
 
 /* TEMPORAL - DEV ONLY: botón para saltar el OTP con el número de prueba */
 .btn--dev-bypass {
-  background: #FFFBEB;
-  color: #92400E;
-  border: 1.5px dashed #F59E0B;
+  background: var(--color-amber-light);
+  color: var(--color-amber-text);
+  border: 1.5px dashed var(--color-amber);
 }
-.btn--dev-bypass:hover    { background: #FEF3C7; }
+.btn--dev-bypass:hover    { background: var(--color-amber); color: #fff; }
 .btn--dev-bypass:disabled { opacity: .6; cursor: not-allowed; }
 
 /* ── Link buttons ───────────────────────────────────────────────────────────── */

@@ -1,14 +1,4 @@
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #64748B;
-  --color-red:           #EF4444;
-  --color-red-light:     #FEE2E2;
   --radius:              14px;
   --radius-sm:           8px;
   --transition:          150ms ease;
@@ -119,6 +109,7 @@
 
 /* ── Form panel ─────────────────────────────────────────────────────────────── */
 .login-form-panel {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: center;
@@ -126,6 +117,12 @@
   padding: 32px 24px;
   background: var(--color-bg);
   overflow-y: auto;
+}
+
+.theme-toggle-anchor {
+  position: absolute;
+  top: 16px;
+  right: 16px;
 }
 
 .login-card {
@@ -178,7 +175,7 @@
 
 .alert--error {
   background: var(--color-red-light);
-  color: #991B1B;
+  color: var(--color-red-text);
 }
 
 /* ── Form ───────────────────────────────────────────────────────────────────── */

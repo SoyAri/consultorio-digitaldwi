@@ -43,7 +43,7 @@
             (blur)="closeDropdown()" />
           @if (searching) {
             <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%)">
-              <svg class="animate-spin" style="width:16px;height:16px;color:#9ca3af" fill="none" viewBox="0 0 24 24">
+              <svg class="animate-spin" style="width:16px;height:16px;color:var(--color-text-muted)" fill="none" viewBox="0 0 24 24">
                 <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                 <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
               </svg>
@@ -53,20 +53,20 @@
 
         <!-- Dropdown de resultados -->
         @if (showDropdown) {
-          <ul style="position:absolute;z-index:50;left:0;right:0;top:100%;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-top:4px;padding:4px 0;list-style:none;max-height:200px;overflow-y:auto">
+          <ul style="position:absolute;z-index:50;left:0;right:0;top:100%;background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;box-shadow:var(--shadow-md);margin-top:4px;padding:4px 0;list-style:none;max-height:200px;overflow-y:auto">
             @for (p of patientResults; track p.id_paciente) {
               <li (mousedown)="selectPatient(p)"
                 style="padding:8px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px"
-                onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                <span style="font-size:.875rem;font-weight:500;color:#111827">{{ p.full_name }}</span>
-                <span style="font-size:.75rem;color:#6b7280">{{ p.phone }}</span>
+                onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background='transparent'">
+                <span style="font-size:.875rem;font-weight:500;color:var(--color-text)">{{ p.full_name }}</span>
+                <span style="font-size:.75rem;color:var(--color-text-muted)">{{ p.phone }}</span>
               </li>
             }
           </ul>
         }
 
         @if (!form.id_paciente && patientQuery.length > 0 && !searching && !showDropdown) {
-          <p class="form-hint" style="color:#ef4444">Selecciona un paciente de la lista.</p>
+          <p class="form-hint" style="color:var(--color-red)">Selecciona un paciente de la lista.</p>
         }
       </div>
 

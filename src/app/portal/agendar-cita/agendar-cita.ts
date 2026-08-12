@@ -7,10 +7,13 @@ import { SupabaseService } from '../../services/supabase.service';
 import { ToastService } from '../../services/toast.service';
 import { DoctorOption, BookAppointmentResponse } from '../../models';
 import { environment } from '../../../environments/environment';
+import { ThemeToggle } from '../../../components/theme-toggle/theme-toggle';
+import { AccessibilityWidget } from '../../../components/accessibility-widget/accessibility-widget';
+import { AccessibilityService } from '../../services/accessibility.service';
 
 @Component({
   selector: 'app-agendar-cita',
-  imports: [CommonModule, RouterModule, DoctorDateSlotPicker],
+  imports: [CommonModule, RouterModule, DoctorDateSlotPicker, ThemeToggle, AccessibilityWidget],
   templateUrl: './agendar-cita.html',
   styleUrl: './agendar-cita.css',
 })
@@ -19,6 +22,7 @@ export class AgendarCita implements OnInit {
   private supabase = inject(SupabaseService).client;
   private toast    = inject(ToastService);
   private router   = inject(Router);
+  protected a11y   = inject(AccessibilityService);
 
   doctors           = signal<DoctorOption[]>([]);
   availableSlots    = signal<string[]>([]);

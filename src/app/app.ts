@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Toast } from '../components/toast/toast';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,6 @@ import { Toast } from '../components/toast/toast';
   styleUrl: './app.css'
 })
 export class App {
+  private readonly themeService = inject(ThemeService);
   protected readonly title = signal('consultorio-digital');
 }

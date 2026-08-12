@@ -1,26 +1,8 @@
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
 :host {
-  --color-primary:        #0D9488;
-  --color-primary-dark:   #0F766E;
-  --color-primary-light:  #CCFBF1;
-  --color-bg:             #F8FAFC;
-  --color-surface:        #FFFFFF;
-  --color-border:         #E2E8F0;
-  --color-text:           #0F172A;
-  --color-text-muted:     #64748B;
-  --color-green:          #10B981;
-  --color-green-light:    #D1FAE5;
-  --color-blue:           #3B82F6;
-  --color-blue-light:     #DBEAFE;
-  --color-amber:          #F59E0B;
-  --color-amber-light:    #FEF3C7;
-  --color-red:            #EF4444;
-  --color-red-light:      #FEE2E2;
   --sidebar-w:            240px;
   --radius:               12px;
   --radius-sm:            8px;
-  --shadow-sm:            0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:            0 4px 12px rgba(0,0,0,.08);
   --transition:           150ms ease;
   display: block;
   height: 100dvh;
@@ -331,7 +313,7 @@
 }
 
 .appt-item:hover { border-color: var(--color-border); background: var(--color-surface); }
-.appt-item--active { background: #FFFBEB; border-color: var(--color-amber); }
+.appt-item--active { background: var(--color-amber-light); border-color: var(--color-amber); }
 
 .appt-item__time-col {
   display: flex;
@@ -405,9 +387,9 @@
 /* ── Badges ──────────────────────────────────────────────────────────────── */
 .badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
 .badge--pendiente  { background: var(--color-primary-light); color: var(--color-primary-dark); }
-.badge--en_curso   { background: var(--color-amber-light); color: #92400E; }
-.badge--completada { background: var(--color-green-light); color: #065F46; }
-.badge--cancelada  { background: var(--color-red-light); color: #991B1B; }
+.badge--en_curso   { background: var(--color-amber-light); color: var(--color-amber-text); }
+.badge--completada { background: var(--color-green-light); color: var(--color-green-text); }
+.badge--cancelada  { background: var(--color-red-light); color: var(--color-red-text); }
 
 /* ── Legend ──────────────────────────────────────────────────────────────── */
 .legend {

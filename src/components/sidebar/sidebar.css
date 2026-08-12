@@ -1,12 +1,4 @@
 :host {
-  --color-primary:       #0D9488;
-  --color-primary-dark:  #0F766E;
-  --color-primary-light: #CCFBF1;
-  --color-bg:            #F8FAFC;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E2E8F0;
-  --color-text:          #0F172A;
-  --color-text-muted:    #64748B;
   --sidebar-w:           240px;
   --radius-sm:           8px;
   --transition:          150ms ease;
@@ -123,8 +115,8 @@
 }
 
 .sidebar__logout:hover {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--color-red-light);
+  color: var(--color-red-text);
 }
 
 .sidebar__logout svg {

@@ -1,26 +1,8 @@
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
 :host {
-  --color-primary:        #0D9488;
-  --color-primary-dark:   #0F766E;
-  --color-primary-light:  #CCFBF1;
-  --color-bg:             #F8FAFC;
-  --color-surface:        #FFFFFF;
-  --color-border:         #E2E8F0;
-  --color-text:           #0F172A;
-  --color-text-muted:     #64748B;
-  --color-blue:           #3B82F6;
-  --color-blue-light:     #DBEAFE;
-  --color-green:          #10B981;
-  --color-green-light:    #D1FAE5;
-  --color-amber:          #F59E0B;
-  --color-amber-light:    #FEF3C7;
-  --color-red:            #EF4444;
-  --color-red-light:      #FEE2E2;
   --sidebar-w:            240px;
   --radius:               12px;
   --radius-sm:            8px;
-  --shadow-sm:            0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:            0 4px 12px rgba(0,0,0,.08);
   --transition:           150ms ease;
   display: block;
   height: 100dvh;
@@ -144,8 +126,8 @@
   transition: background 0.15s, color 0.15s;
 }
 .sidebar__logout:hover {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--color-red-light);
+  color: var(--color-red-text);
 }
 .sidebar__logout svg {
   width: 16px;
@@ -500,10 +482,10 @@ a.appointment-item__name:hover { color: var(--color-primary); text-decoration: u
   white-space: nowrap;
 }
 
-.badge--pendiente   { background: var(--color-amber-light); color: #92400E; }
+.badge--pendiente   { background: var(--color-amber-light); color: var(--color-amber-text); }
 .badge--en_curso    { background: var(--color-primary-light); color: var(--color-primary-dark); }
-.badge--completada  { background: var(--color-green-light); color: #065F46; }
-.badge--cancelada   { background: var(--color-red-light); color: #991B1B; }
+.badge--completada  { background: var(--color-green-light); color: var(--color-green-text); }
+.badge--cancelada   { background: var(--color-red-light); color: var(--color-red-text); }
 
 /* ── Pulse dot ──────────────────────────────────────────────────────────────── */
 .pulse-dot {

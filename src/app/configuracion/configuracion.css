@@ -1,24 +1,8 @@
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
 :host {
-  --color-primary:        #0D9488;
-  --color-primary-dark:   #0F766E;
-  --color-primary-light:  #CCFBF1;
-  --color-bg:             #F8FAFC;
-  --color-surface:        #FFFFFF;
-  --color-border:         #E2E8F0;
-  --color-text:           #0F172A;
-  --color-text-muted:     #64748B;
-  --color-blue:           #3B82F6;
-  --color-blue-light:     #DBEAFE;
-  --color-green:          #10B981;
-  --color-green-light:    #D1FAE5;
-  --color-red:            #EF4444;
-  --color-red-light:      #FEE2E2;
   --sidebar-w:            240px;
   --radius:               12px;
   --radius-sm:            8px;
-  --shadow-sm:            0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:            0 4px 12px rgba(0,0,0,.08);
   --transition:           150ms ease;
   display: block;
   height: 100dvh;
@@ -270,7 +254,7 @@
 
 .staff-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: #CBD5E1;
+  border-color: var(--color-text-muted);
 }
 
 .staff-card__top {
@@ -278,6 +262,34 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.staff-card__top-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.staff-card__menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: background var(--transition), color var(--transition);
+}
+
+.staff-card__menu-btn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.staff-card__menu-btn svg { width: 18px; height: 18px; }
 
 .staff-card__body { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 
@@ -324,8 +336,8 @@
   white-space: nowrap;
 }
 
-.badge--blue  { background: var(--color-blue-light);  color: #1E40AF; }
-.badge--green { background: var(--color-green-light); color: #065F46; }
+.badge--blue  { background: var(--color-blue-light);  color: var(--color-blue-text); }
+.badge--green { background: var(--color-green-light); color: var(--color-green-text); }
 
 /* ── Buttons ────────────────────────────────────────────────────────────────── */
 .btn {

@@ -2,6 +2,9 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
+import { ThemeToggle } from '../../../components/theme-toggle/theme-toggle';
+import { AccessibilityWidget } from '../../../components/accessibility-widget/accessibility-widget';
+import { AccessibilityService } from '../../services/accessibility.service';
 
 interface ConsultaDetalleData {
   id_historial: string;
@@ -17,7 +20,7 @@ interface ConsultaDetalleData {
 
 @Component({
   selector: 'app-consulta-detalle',
-  imports: [CommonModule],
+  imports: [CommonModule, ThemeToggle, AccessibilityWidget],
   templateUrl: './consulta-detalle.html',
   styleUrl: './consulta-detalle.css',
 })
@@ -25,6 +28,7 @@ export class ConsultaDetalle implements OnInit {
   private route    = inject(ActivatedRoute);
   private router   = inject(Router);
   private supabase = inject(SupabaseService).client;
+  protected a11y   = inject(AccessibilityService);
 
   consulta = signal<ConsultaDetalleData | null>(null);
   loading  = signal(true);

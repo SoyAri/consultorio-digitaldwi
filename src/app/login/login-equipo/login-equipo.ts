@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeToggle } from '../../../components/theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-login-equipo',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ThemeToggle],
   templateUrl: './login-equipo.html',
   styleUrl: './login-equipo.css',
 })

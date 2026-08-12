@@ -1,22 +1,8 @@
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
 :host {
-  --color-primary:        #0D9488;
-  --color-primary-dark:   #0F766E;
-  --color-primary-light:  #CCFBF1;
-  --color-bg:             #F8FAFC;
-  --color-surface:        #FFFFFF;
-  --color-border:         #E2E8F0;
-  --color-text:           #0F172A;
-  --color-text-muted:     #64748B;
-  --color-blue:           #3B82F6;
-  --color-blue-light:     #DBEAFE;
-  --color-amber:          #F59E0B;
-  --color-amber-light:    #FEF3C7;
   --sidebar-w:            240px;
   --radius:               12px;
   --radius-sm:            8px;
-  --shadow-sm:            0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:            0 4px 12px rgba(0,0,0,.08);
   --transition:           150ms ease;
   display: block;
   height: 100dvh;
@@ -94,11 +80,11 @@
   margin: 6px 0 0;
   font-size: 12px;
   font-weight: 600;
-  color: #DC2626;
+  color: var(--color-red-text);
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #FEE2E2;
+  background: var(--color-red-light);
   padding: 3px 10px 3px 8px;
   border-radius: 20px;
   width: fit-content;
@@ -131,8 +117,8 @@
 .status-pill:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
 .status-pill--en_tratamiento.status-pill--active { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary-dark); font-weight: 600; }
-.status-pill--dado_de_alta.status-pill--active   { background: var(--color-blue-light); border-color: var(--color-blue); color: #1D4ED8; font-weight: 600; }
-.status-pill--inactivo.status-pill--active       { background: #F1F5F9; border-color: #94A3B8; color: #475569; font-weight: 600; }
+.status-pill--dado_de_alta.status-pill--active   { background: var(--color-blue-light); border-color: var(--color-blue); color: var(--color-blue-text); font-weight: 600; }
+.status-pill--inactivo.status-pill--active       { background: var(--color-bg); border-color: var(--color-border); color: var(--color-text-muted); font-weight: 600; }
 
 .patient-header__actions { display: flex; gap: 8px; }
 
@@ -163,7 +149,7 @@
 
 .info-row__label { font-size: 11px; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .5px; }
 .info-row__value { font-size: 14px; color: var(--color-text); }
-.info-row__value--alert { color: #DC2626; font-weight: 600; }
+.info-row__value--alert { color: var(--color-red); font-weight: 600; }
 .info-row__value--note  { font-size: 13px; color: var(--color-text-muted); font-style: italic; }
 
 /* ── History section ─────────────────────────────────────────────────────── */

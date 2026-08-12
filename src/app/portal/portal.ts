@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { DatabaseService } from '../services/database.service';
+import { ThemeToggle } from '../../components/theme-toggle/theme-toggle';
+import { AccessibilityWidget } from '../../components/accessibility-widget/accessibility-widget';
+import { AccessibilityService } from '../services/accessibility.service';
 
 // =============================================================================
 // [TODO-SEGURIDAD] RESPONSABILIDAD: COMPAÑERO PORTAL
@@ -22,7 +25,7 @@ interface PatientSession {
 
 @Component({
   selector: 'app-portal',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ThemeToggle, AccessibilityWidget],
   templateUrl: './portal.html',
   styleUrl: './portal.css',
 })
@@ -30,6 +33,7 @@ export class Portal implements OnInit,  OnDestroy {
   private supabase = inject(SupabaseService).client;
   private router   = inject(Router);
   private db       = inject(DatabaseService);
+  protected a11y   = inject(AccessibilityService);
 
   patient       = signal<PatientSession | null>(null);
   patientName   = signal('');
